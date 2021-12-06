@@ -227,7 +227,7 @@ Mappings:
       Yum: public.ecr.aws/senzing/yum:1.1.6
     Run:
       ApiServer: Yes
-      Sshd: Yes
+      Sshd: No
       SshdMax: No
       Swagger: Yes
     Stack:
