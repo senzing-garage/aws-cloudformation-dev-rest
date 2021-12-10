@@ -686,6 +686,24 @@ Resources:
     Type: AWS::IAM::Policy
 
 
+  IamPolicySqsProducer:
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-iam-policy-sqs-producer"
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+              - sqs:SendMessage
+              - sqs:GetQueueAttributes
+            Effect: Allow
+            Resource:
+              - !GetAtt SqsOutput.Arn
+        Version: '2012-10-17'
+      Roles:
+       - !Ref IamRoleApiServer
+    Type: AWS::IAM::Policy
+
+
   IamPolicyTaskRunner:
     Properties:
       PolicyName: !Sub "${AWS::StackName}-iam-policy-task-runner"
