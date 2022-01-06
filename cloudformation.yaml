@@ -38,6 +38,8 @@ Metadata:
         Parameters:
           - CognitoAdminEmail
           - CidrInbound
+          - SenzingApiServerKeyStore
+          - SenzingApiServerClientKeyStore
       -
         Label:
           default: Security responsibility
@@ -53,6 +55,10 @@ Metadata:
         default: 'Required: Provide the permitted IP address block allowed to connect using CIDR notation.'
       CognitoAdminEmail:
         default: 'Required: Provide the email address for the administrative user.'
+      SenzingApiServerClientKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
+      SenzingApiServerKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
       DatabaseStack:
         default: 'Required: Provide the name of stack containing the Senzing database(s).'
       SecurityResponsibility:
@@ -123,6 +129,17 @@ Parameters:
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Type: String
 
+  SenzingApiServerKeyStore:
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Default: ' '
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Type: String
+  
+  SenzingApiServerClientKeyStore:
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Default: ' '
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Type: String
 
   SenzingVersion:
     AllowedValues:
@@ -1143,6 +1160,22 @@ Resources:
           Fn::Sub: '${DatabaseStack}-subnet-private-2'
     Type: AWS::EFS::MountTarget
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html
+
+  AccessPointResource:
+    Properties:
+      FileSystemId: !Ref EfsFileSystem
+      PosixUser:
+        Uid: "1000"
+        Gid: "1000"
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: "1000"
+          OwnerUid: "1000"
+          Permissions: "0777"
+        Path: "/cert"
+    Type: AWS::EFS::AccessPoint
+
 # -- Queue --------------------------------------------------------------------
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-queues.html
@@ -1781,6 +1814,50 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-lambda-wait-for-efs"
       Timeout: 600
+    Type: AWS::Lambda::Function
+  
+  LambdaFunctionGenerateApiSslCertificate:
+    Condition: IfUsingApiServer
+    Properties:
+      Code:
+        ZipFile: |
+          package example;
+
+          import com.amazonaws.services.lambda.runtime.Context;
+          import com.amazonaws.services.lambda.runtime.RequestHandler;
+          import com.amazonaws.services.lambda.runtime.LambdaLogger;
+
+          import com.google.gson.Gson;
+          import com.google.gson.GsonBuilder;
+
+          import java.util.Map;
+
+          // Handler value: example.Handler
+          public class Handler implements RequestHandler<Map<String,String>, String>{
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            @Override
+            public String handleRequest(Map<String,String> event, Context context)
+            {
+              LambdaLogger logger = context.getLogger();
+              String response = "200 OK";
+              // log execution details
+              logger.log("ENVIRONMENT VARIABLES: " + gson.toJson(System.getenv()));
+              logger.log("CONTEXT: " + gson.toJson(context));
+              // process event
+              logger.log("EVENT: " + gson.toJson(event));
+              logger.log("EVENT TYPE: " + event.getClass());
+              return response;
+            }
+          }
+      Description: Generate all certificates required for API server mtls authentication.
+      FunctionName: !Sub "${AWS::StackName}-lambda-generate-mtls-certificate"
+      Handler: example.handler
+      Role: !GetAtt IamRoleLambda.Arn
+      Runtime: java11
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-generate-mtls-certificate"
+      Timeout: 900
     Type: AWS::Lambda::Function
 
 # -- Run Lambda jobs ----------------------------------------------------------
@@ -2524,6 +2601,12 @@ Resources:
             -
               Name: SENZING_LICENSE_BASE64_ENCODED
               Value: !Sub "${SenzingLicenseAsBase64}"
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_BASE64_ENCODED
+              Value: !Sub "${SenzingApiServerKeyStore}"
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_BASE64_ENCODED
+              Value: !Sub "${SenzingApiServerClientKeyStore}"
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
