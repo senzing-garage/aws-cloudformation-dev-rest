@@ -39,7 +39,10 @@ Metadata:
           - CognitoAdminEmail
           - CidrInbound
           - SenzingApiServerKeyStore
+          - SenzingApiServerKeyStorePassword
+          - SenzingApiServerKeyStoreAlias
           - SenzingApiServerClientKeyStore
+          - SenzingApiServerClientKeyStorePassword
       -
         Label:
           default: Security responsibility
@@ -55,10 +58,6 @@ Metadata:
         default: 'Required: Provide the permitted IP address block allowed to connect using CIDR notation.'
       CognitoAdminEmail:
         default: 'Required: Provide the email address for the administrative user.'
-      SenzingApiServerClientKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
-      SenzingApiServerKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
       DatabaseStack:
         default: 'Required: Provide the name of stack containing the Senzing database(s).'
       SecurityResponsibility:
@@ -67,6 +66,16 @@ Metadata:
           Before using authentic PII, ensure the security of your deployment.
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
+      SenzingApiServerClientKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
+      SenzingApiServerClientKeyStorePassword:
+        default: 'If enabling mtls authentication, provide client keystore password'
+      SenzingApiServerKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
+      SenzingApiServerKeyStorePassword:
+        default: 'If enabling mtls authentication, provide server keystore password'
+      SenzingApiServerKeyStoreAlias:
+        default: 'If enabling mtls authentication, provide server keystore alias'
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
@@ -134,11 +143,26 @@ Parameters:
     Default: ' '
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Type: String
+
+  SenzingApiServerKeyStorePassword:
+    Default: ' '
+    Description: 'Senzing API Server Key Store Password'
+    Type: String
+  
+  SenzingApiServerKeyStoreAlias:
+    Default: ' '
+    Description: 'Senzing API Server Client Key Store Alias'
+    Type: String
   
   SenzingApiServerClientKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: ' '
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Type: String
+  
+  SenzingApiServerClientKeyStorePassword:
+    Default: ' '
+    Description: 'Senzing API Server Client Key Store Password'
     Type: String
 
   SenzingVersion:
@@ -2443,6 +2467,21 @@ Resources:
             -
               Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
+            -
+              Name: SENZING_API_SERVER_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerKeyStorePassword}'
+            -
+              Name: SENZING_API_SERVER_KEY_ALIAS
+              Value: !Sub '${SenzingApiServerKeyStoreAlias}'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-client-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerClientKeyStorePassword}'
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
