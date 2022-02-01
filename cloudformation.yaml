@@ -134,10 +134,10 @@ Parameters:
 
   SenzingLicenseAsBase64:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
-    Default: '_'
+    Default: ' '
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Type: String
-
+  
   SenzingApiServerKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
@@ -260,7 +260,7 @@ Mappings:
 
   Constants:
     Images:
-      ApiServer: public.ecr.aws/senzing/senzing-api-server:2.7.5
+      ApiServer: senzing/senzing-api-server:test1
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
       InitContainer: public.ecr.aws/senzing/init-container:test
       Sshd: public.ecr.aws/senzing/sshd:1.2.5
@@ -754,10 +754,6 @@ Resources:
             Action:
               - ecs:DescribeTasks
               - ecs:RunTask
-              - ssmmessages:CreateControlChannel
-              - ssmmessages:CreateDataChannel
-              - ssmmessages:OpenControlChannel
-              - ssmmessages:OpenDataChannel
             Effect: Allow
             Resource:
               - '*'
@@ -988,17 +984,27 @@ Resources:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group-ingress.html
 # AWS Console: https://console.aws.amazon.com/vpc/home?#SecurityGroups: > Search for {stack}-ec2-security-group-alb-public > Inbound rules
 
-  Ec2SecurityGroupIngressApiServerPublic:
+  Ec2SecurityGroupIngressApiServerHealthPublic:
     Condition: IfUsingApiServer
     Properties:
-      Description: Allow Health Check on Container from ALB
-      FromPort: 8250
+      Description: Allow Health Check on Container port 80 from ALB
+      FromPort: 80
       GroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
       IpProtocol: tcp
       SourceSecurityGroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
-      ToPort: 8250
+      ToPort: 80
     Type: AWS::EC2::SecurityGroupIngress
-
+  
+  Ec2SecurityGroupIngressApiServerPublic:
+    Condition: IfUsingApiServer
+    Properties:
+      Description: allow network ingress on container port 2443 from ALB
+      FromPort: 2443
+      GroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
+      ToPort: 2443
+    Type: AWS::EC2::SecurityGroupIngress
 
   Ec2SecurityGroupIngressApiServerPrivate:
     Condition: IfUsingApiServer
@@ -1187,22 +1193,6 @@ Resources:
         Fn::ImportValue:
           Fn::Sub: '${DatabaseStack}-subnet-private-2'
     Type: AWS::EFS::MountTarget
-
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html
-
-  AccessPointResource:
-    Properties:
-      FileSystemId: !Ref EfsFileSystem
-      PosixUser:
-        Uid: "1000"
-        Gid: "1000"
-      RootDirectory:
-        CreationInfo:
-          OwnerGid: "1000"
-          OwnerUid: "1000"
-          Permissions: "0777"
-        Path: "/cert"
-    Type: AWS::EFS::AccessPoint
 
 # -- Queue --------------------------------------------------------------------
 
@@ -2122,14 +2112,13 @@ Resources:
     Properties:
       HealthCheckIntervalSeconds: 80
       HealthCheckPath: '/api/heartbeat'
-      HealthCheckProtocol: HTTPS
-      HealthCheckPort: "8250"
+      HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 50
       HealthyThresholdCount: 2
       Matcher:
-        HttpCode: 200-299
+        HttpCode: 200-499
       Name: !Sub "${AWS::StackName}-tg-api-public"
-      Port: 443
+      Port: 2443
       Protocol: HTTPS
       Tags:
         - Key: Name
@@ -2217,6 +2206,14 @@ Resources:
     Condition: IfUsingApiServer
     Properties:
       Actions:
+        # - AuthenticateCognitoConfig:
+        #     OnUnauthenticatedRequest: authenticate
+        #     Scope: openid
+        #     UserPoolArn: !GetAtt 'UserPool.Arn'
+        #     UserPoolClientId: !Ref UserPoolClient
+        #     UserPoolDomain: !Ref UserPoolDomain
+        #   Order: 1
+        #   Type: authenticate-cognito
         -
           Type: "forward"
           TargetGroupArn: !Ref TargetGroupApiServerPublic
@@ -2394,11 +2391,14 @@ Resources:
               Name: SENZING_API_SERVER_ENABLE_ADMIN
               Value: 'true'
             -
-              Name: SENZING_API_SERVER_SECURE_PORT
-              Value: "8250"
-            -
               Name: SENZING_API_SERVER_INIT_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
+            -
+              Name: SENZING_API_SERVER_PORT
+              Value: "80"
+            -
+              Name: SENZING_API_SERVER_SECURE_PORT
+              Value: "2443"
             -
               Name: SENZING_API_SERVER_SKIP_ENGINE_PRIMING
               Value: 'true'
@@ -2420,21 +2420,21 @@ Resources:
             -
               Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
-            # -
-            #   Name: SENZING_API_SERVER_KEY_STORE
-            #   Value: '/etc/opt/senzing/api-server-keystore.p12'
-            # -
-            #   Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
-            #   Value: !Sub '${SenzingApiServerKeyStorePassword}'
-            # -
-            #   Name: SENZING_API_SERVER_KEY_ALIAS
-            #   Value: !Sub '${SenzingApiServerKeyStoreAlias}'
-            # -
-            #   Name: SENZING_API_SERVER_CLIENT_KEY_STORE
-            #   Value: '/etc/opt/senzing/api-server-client-keystore.p12'
-            # -
-            #   Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
-            #   Value: !Sub '${SenzingApiServerClientKeyStorePassword}'
+            -
+              Name: SENZING_API_SERVER_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerKeyStorePassword}'
+            -
+              Name: SENZING_API_SERVER_KEY_ALIAS
+              Value: !Sub '${SenzingApiServerKeyStoreAlias}'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-client-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerClientKeyStorePassword}'
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
@@ -2459,11 +2459,14 @@ Resources:
             -
               SourceVolume: senzing-var-dir
               ContainerPath: /var/opt/senzing
-              ReadOnly: true
+              ReadOnly: false
           Name: api-server
           PortMappings:
-            - ContainerPort: 8250
-              HostPort: 8250
+            - ContainerPort: 2443
+              HostPort: 2443
+              Protocol: tcp
+            - ContainerPort: 80
+              HostPort: 80
               Protocol: tcp
           Privileged: false
           ReadonlyRootFilesystem: false
@@ -2958,11 +2961,14 @@ Resources:
       Cluster: !Ref EcsCluster
       DesiredCount: 1
       EnableECSManagedTags: true
-      EnableExecuteCommand: true
       LaunchType: FARGATE
       LoadBalancers:
+        # -
+        #   ContainerPort: 8250
+        #   ContainerName: api-server
+        #   TargetGroupArn: !Ref TargetGroupApiServerPrivate
         -
-          ContainerPort: 8250
+          ContainerPort: 2443
           ContainerName: api-server
           TargetGroupArn: !Ref TargetGroupApiServerPublic
       NetworkConfiguration:
