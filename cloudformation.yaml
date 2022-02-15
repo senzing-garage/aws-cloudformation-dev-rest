@@ -88,7 +88,7 @@ Metadata:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
 # -----------------------------------------------------------------------------
 
-Parameters:
+Parameters: # rmb to change back parameters
 
 # AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Parameters
 
@@ -265,7 +265,7 @@ Mappings:
       InitContainer: public.ecr.aws/senzing/init-container:test
       Sshd: public.ecr.aws/senzing/sshd:1.2.5
       Swagger: public.ecr.aws/senzing/swagger-ui:v3.51.0
-      Yum: public.ecr.aws/senzing/yum:1.1.6
+      Yum: public.ecr.aws/senzing/yum:1.1.8
     Run:
       ApiServer: Yes
       Sshd: No
@@ -934,9 +934,9 @@ Resources:
             Fn::ImportValue:
               Fn::Sub: '${DatabaseStack}-ec2-VpcId-cidrblock'
           Description: Senzing API server
-          FromPort: 8250
+          FromPort: 2443
           IpProtocol: tcp
-          ToPort: 8250
+          ToPort: 2443
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-ec2-security-group-alb-private"
@@ -984,17 +984,6 @@ Resources:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group-ingress.html
 # AWS Console: https://console.aws.amazon.com/vpc/home?#SecurityGroups: > Search for {stack}-ec2-security-group-alb-public > Inbound rules
 
-  Ec2SecurityGroupIngressApiServerHealthPublic:
-    Condition: IfUsingApiServer
-    Properties:
-      Description: Allow Health Check on Container port 80 from ALB
-      FromPort: 80
-      GroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
-      IpProtocol: tcp
-      SourceSecurityGroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
-      ToPort: 80
-    Type: AWS::EC2::SecurityGroupIngress
-  
   Ec2SecurityGroupIngressApiServerPublic:
     Condition: IfUsingApiServer
     Properties:
@@ -2027,28 +2016,6 @@ Resources:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > Search for {stack}
 
-  # LoadBalancerPrivate:
-  #   Properties:
-  #     Name: !Sub
-  #       - "${StackNameAsLower}-alb-private"
-  #       - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
-  #     Scheme: internal
-  #     SecurityGroups:
-  #       - !Ref Ec2SecurityGroupLoadBalancerPrivate
-  #     Subnets:
-  #       - Fn::ImportValue:
-  #           Fn::Sub: '${DatabaseStack}-subnet-private-1'
-  #       - Fn::ImportValue:
-  #           Fn::Sub: '${DatabaseStack}-subnet-private-2'
-  #     Tags:
-  #       - Key: Name
-  #         Value: !Sub
-  #           - "${StackNameAsLower}-alb-private"
-  #           - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
-  #     Type: application
-  #   Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-
-
   LoadBalancerPublic:
     Condition: IfUsingWeb
     DependsOn:
@@ -2070,71 +2037,44 @@ Resources:
             - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  
+  NetworkLoadBalancerPublic:
+    Condition: IfUsingApiServer
+    Properties:
+      Name: !Sub
+        - "${StackNameAsLower}-nlb-public"
+        - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
+      Scheme: internet-facing
+      Subnets:
+        - !Ref Ec2SubnetPublic1
+        - !Ref Ec2SubnetPublic2
+      Tags:
+        - Key: Name
+          Value: !Sub
+            - "${StackNameAsLower}-nlb-public"
+            - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
+      Type: network
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#TargetGroups: > Search for {stack}
 
-  # TargetGroupApiServerPrivate:
-  #   Condition: IfUsingApiServer
-  #   DependsOn:
-  #    - LoadBalancerPrivate
-  #   Properties:
-  #     HealthCheckIntervalSeconds: 80
-  #     HealthCheckPath: '/api/heartbeat'
-  #     HealthCheckProtocol: HTTP
-  #     HealthCheckTimeoutSeconds: 50
-  #     HealthyThresholdCount: 2
-  #     Matcher:
-  #       HttpCode: 200-299
-  #     Name: !Sub "${AWS::StackName}-tg-api-private"
-  #     Port: 8250
-  #     Protocol: HTTP
-  #     Tags:
-  #       - Key: Name
-  #         Value: !Sub "${AWS::StackName}-target-group-api-server-private"
-  #     TargetGroupAttributes:
-  #       - Key: deregistration_delay.timeout_seconds
-  #         Value: '60'
-  #       - Key: slow_start.duration_seconds
-  #         Value: '120'
-  #     TargetType: ip
-  #     UnhealthyThresholdCount: 5
-  #     VpcId:
-  #       Fn::ImportValue:
-  #         Fn::Sub: '${DatabaseStack}-ec2-VpcId'
-  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
-
-
   TargetGroupApiServerPublic:
     Condition: IfUsingApiServer
     DependsOn:
-     - LoadBalancerPublic
+     - NetworkLoadBalancerPublic
     Properties:
-      HealthCheckIntervalSeconds: 80
-      HealthCheckPath: '/api/heartbeat'
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 50
-      HealthyThresholdCount: 2
-      Matcher:
-        HttpCode: 200-499
       Name: !Sub "${AWS::StackName}-tg-api-public"
       Port: 2443
-      Protocol: HTTPS
+      Protocol: TCP
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-target-group-api-server-public"
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: '60'
-        - Key: slow_start.duration_seconds
-          Value: '120'
       TargetType: ip
-      UnhealthyThresholdCount: 5
       VpcId:
         Fn::ImportValue:
           Fn::Sub: '${DatabaseStack}-ec2-VpcId'
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
-
 
   TargetGroupSwagger:
     Condition: IfRunSwagger
@@ -2168,18 +2108,6 @@ Resources:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab
 
-  # ListenerApiServerPrivate:
-  #   Condition: IfUsingApiServer
-  #   Properties:
-  #     DefaultActions:
-  #       - TargetGroupArn: !Ref TargetGroupApiServerPrivate
-  #         Type: forward
-  #     LoadBalancerArn: !Ref LoadBalancerPrivate
-  #     Port: 8250
-  #     Protocol: HTTP
-  #   Type: AWS::ElasticLoadBalancingV2::Listener
-
-
   ListenerPort443:
     Condition: IfUsingWeb
     Properties:
@@ -2198,37 +2126,21 @@ Resources:
       Port: 443
       Protocol: HTTPS
     Type: AWS::ElasticLoadBalancingV2::Listener
+  
+  TcpListenerPort443:
+    Condition: IfUsingApiServer
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroupApiServerPublic
+      LoadBalancerArn: !Ref NetworkLoadBalancerPublic
+      Port: 443
+      Protocol: TCP
+    Type: AWS::ElasticLoadBalancingV2::Listener
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab > "View/edit rules"
-
-  ListenerRuleApiServer:
-    Condition: IfUsingApiServer
-    Properties:
-      Actions:
-        # - AuthenticateCognitoConfig:
-        #     OnUnauthenticatedRequest: authenticate
-        #     Scope: openid
-        #     UserPoolArn: !GetAtt 'UserPool.Arn'
-        #     UserPoolClientId: !Ref UserPoolClient
-        #     UserPoolDomain: !Ref UserPoolDomain
-        #   Order: 1
-        #   Type: authenticate-cognito
-        -
-          Type: "forward"
-          TargetGroupArn: !Ref TargetGroupApiServerPublic
-          Order: 1
-      Conditions:
-        -
-          Field: "path-pattern"
-          Values:
-            - "/api/*"
-            - "/api"
-      ListenerArn: !Ref ListenerPort443
-      Priority: 2
-    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
-
-
+  
   ListenerRuleSwagger:
     Condition: IfRunSwagger
     Properties:
@@ -2394,9 +2306,6 @@ Resources:
               Name: SENZING_API_SERVER_INIT_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
             -
-              Name: SENZING_API_SERVER_PORT
-              Value: "80"
-            -
               Name: SENZING_API_SERVER_SECURE_PORT
               Value: "2443"
             -
@@ -2464,9 +2373,6 @@ Resources:
           PortMappings:
             - ContainerPort: 2443
               HostPort: 2443
-              Protocol: tcp
-            - ContainerPort: 80
-              HostPort: 80
               Protocol: tcp
           Privileged: false
           ReadonlyRootFilesystem: false
@@ -2956,17 +2862,13 @@ Resources:
     DependsOn:
      - LambdaRunnerInitSenzing
      - ListenerPort443
-     - ListenerRuleApiServer
+    #  - ListenerRuleApiServer
     Properties:
       Cluster: !Ref EcsCluster
       DesiredCount: 1
       EnableECSManagedTags: true
       LaunchType: FARGATE
       LoadBalancers:
-        # -
-        #   ContainerPort: 8250
-        #   ContainerName: api-server
-        #   TargetGroupArn: !Ref TargetGroupApiServerPrivate
         -
           ContainerPort: 2443
           ContainerName: api-server
@@ -3187,12 +3089,12 @@ Outputs:
     Description: "URL for API Server. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserver"
     Export:
       Name: !Sub "${AWS::StackName}-url-api-server"
-    Value: !Sub "https://${LoadBalancerPublic.DNSName}/api/"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/"
 
   UrlApiServerHeartbeat:
     Condition: IfUsingApiServer
     Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserverheartbeat"
-    Value: !Sub "https://${LoadBalancerPublic.DNSName}/api/heartbeat/"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat/"
 
   UrlSwagger:
     Condition: IfRunSwagger
