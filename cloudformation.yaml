@@ -260,7 +260,7 @@ Mappings:
 
   Constants:
     Images:
-      ApiServer: senzing/senzing-api-server:test1
+      ApiServer: senzing/senzing-api-server:2.7.5
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
       InitContainer: public.ecr.aws/senzing/init-container:test
       Sshd: public.ecr.aws/senzing/sshd:1.2.5
