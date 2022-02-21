@@ -34,6 +34,11 @@ Metadata:
         Parameters:
           - CognitoAdminEmail
           - CidrInbound
+          - SenzingApiServerKeyStore
+          - SenzingApiServerKeyStorePassword
+          - SenzingApiServerKeyStoreAlias
+          - SenzingApiServerClientKeyStore
+          - SenzingApiServerClientKeyStorePassword
       - Label:
           default: Security responsibility
         Parameters:
@@ -56,6 +61,16 @@ Metadata:
           Before using authentic PII, ensure the security of your deployment.
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
+      SenzingApiServerClientKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
+      SenzingApiServerClientKeyStorePassword:
+        default: 'If enabling mtls authentication, provide client keystore password'
+      SenzingApiServerKeyStore:
+        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
+      SenzingApiServerKeyStorePassword:
+        default: 'If enabling mtls authentication, provide server keystore password'
+      SenzingApiServerKeyStoreAlias:
+        default: 'If enabling mtls authentication, provide server keystore alias'
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
@@ -69,7 +84,8 @@ Metadata:
 # -----------------------------------------------------------------------------
 
 Parameters:
-  # AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Parameters
+
+# AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Parameters
 
   AcceptEula:
     AllowedPattern: ".+|^I_ACCEPT_THE_SENZING_EULA$"
@@ -110,6 +126,34 @@ Parameters:
     ConstraintDescription: "Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
     Default: " "
     Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
+    Type: String
+  
+  SenzingApiServerKeyStore:
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Default: '_'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Type: String
+
+
+  SenzingApiServerKeyStorePassword:
+    Default: '_'
+    Description: 'Senzing API Server Key Store Password'
+    Type: String
+  
+  SenzingApiServerKeyStoreAlias:
+    Default: '_'
+    Description: 'Senzing API Server Client Key Store Alias'
+    Type: String
+  
+  SenzingApiServerClientKeyStore:
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Default: '_'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Type: String
+  
+  SenzingApiServerClientKeyStorePassword:
+    Default: '_'
+    Description: 'Senzing API Server Client Key Store Password'
     Type: String
 
   SenzingVersion:
@@ -201,9 +245,9 @@ Mappings:
 
   Constants:
     Images:
-      ApiServer: public.ecr.aws/senzing/senzing-api-server:2.7.5
+      ApiServer: senzing/senzing-api-server:2.7.5
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
-      InitContainer: public.ecr.aws/senzing/init-container:1.6.14
+      InitContainer: public.ecr.aws/senzing/init-container:test
       Sshd: public.ecr.aws/senzing/sshd:1.2.5
       Swagger: public.ecr.aws/senzing/swagger-ui:v3.51.0
       Yum: public.ecr.aws/senzing/yum:1.1.8
@@ -822,9 +866,9 @@ Resources:
             Fn::ImportValue:
               Fn::Sub: "${DatabaseStack}-ec2-VpcId-cidrblock"
           Description: Senzing API server
-          FromPort: 8250
+          FromPort: 2443
           IpProtocol: tcp
-          ToPort: 8250
+          ToPort: 2443
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-ec2-security-group-alb-private"
@@ -871,12 +915,12 @@ Resources:
   Ec2SecurityGroupIngressApiServerPublic:
     Condition: IfUsingApiServer
     Properties:
-      Description: Allow Health Check on Container 8250 from ALB
-      FromPort: 8250
+      Description: allow network ingress on container port 2443 from ALB
+      FromPort: 2443
       GroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
       IpProtocol: tcp
       SourceSecurityGroupId: !GetAtt Ec2SecurityGroupLoadBalancerPublic.GroupId
-      ToPort: 8250
+      ToPort: 2443
     Type: AWS::EC2::SecurityGroupIngress
 
   Ec2SecurityGroupIngressApiServerPrivate:
@@ -1869,27 +1913,6 @@ Resources:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html
   # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > Search for {stack}
 
-  LoadBalancerPrivate:
-    Properties:
-      Name: !Sub
-        - "${StackNameAsLower}-alb-private"
-        - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
-      Scheme: internal
-      SecurityGroups:
-        - !Ref Ec2SecurityGroupLoadBalancerPrivate
-      Subnets:
-        - Fn::ImportValue:
-            Fn::Sub: "${DatabaseStack}-subnet-private-1"
-        - Fn::ImportValue:
-            Fn::Sub: "${DatabaseStack}-subnet-private-2"
-      Tags:
-        - Key: Name
-          Value: !Sub
-            - "${StackNameAsLower}-alb-private"
-            - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
-      Type: application
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-
   LoadBalancerPublic:
     Condition: IfUsingWeb
     DependsOn: IamServerCertificate
@@ -1910,65 +1933,40 @@ Resources:
             - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
-  # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#TargetGroups: > Search for {stack}
-
-  TargetGroupApiServerPrivate:
+  
+  NetworkLoadBalancerPublic:
     Condition: IfUsingApiServer
-    DependsOn:
-      - LoadBalancerPrivate
     Properties:
-      HealthCheckIntervalSeconds: 80
-      HealthCheckPath: "/api/heartbeat"
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 50
-      HealthyThresholdCount: 2
-      Matcher:
-        HttpCode: 200-299
-      Name: !Sub "${AWS::StackName}-tg-api-private"
-      Port: 8250
-      Protocol: HTTP
+      Name: !Sub
+        - "${StackNameAsLower}-nlb-public"
+        - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
+      Scheme: internet-facing
+      Subnets:
+        - !Ref Ec2SubnetPublic1
+        - !Ref Ec2SubnetPublic2
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-target-group-api-server-private"
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: "60"
-        - Key: slow_start.duration_seconds
-          Value: "120"
-      TargetType: ip
-      UnhealthyThresholdCount: 5
-      VpcId:
-        Fn::ImportValue:
-          Fn::Sub: "${DatabaseStack}-ec2-VpcId"
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+          Value: !Sub
+            - "${StackNameAsLower}-nlb-public"
+            - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
+      Type: network
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
+# AWS Console: https://console.aws.amazon.com/ec2/v2/home?#TargetGroups: > Search for {stack}
 
   TargetGroupApiServerPublic:
     Condition: IfUsingApiServer
     DependsOn:
-      - LoadBalancerPublic
+     - NetworkLoadBalancerPublic
     Properties:
-      HealthCheckIntervalSeconds: 80
-      HealthCheckPath: "/api/heartbeat"
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 50
-      HealthyThresholdCount: 2
-      Matcher:
-        HttpCode: 200-299
       Name: !Sub "${AWS::StackName}-tg-api-public"
-      Port: 8250
-      Protocol: HTTP
+      Port: 2443
+      Protocol: TCP
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-target-group-api-server-public"
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: "60"
-        - Key: slow_start.duration_seconds
-          Value: "120"
       TargetType: ip
-      UnhealthyThresholdCount: 5
       VpcId:
         Fn::ImportValue:
           Fn::Sub: "${DatabaseStack}-ec2-VpcId"
@@ -2005,17 +2003,6 @@ Resources:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
   # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab
 
-  ListenerApiServerPrivate:
-    Condition: IfUsingApiServer
-    Properties:
-      DefaultActions:
-        - TargetGroupArn: !Ref TargetGroupApiServerPrivate
-          Type: forward
-      LoadBalancerArn: !Ref LoadBalancerPrivate
-      Port: 8250
-      Protocol: HTTP
-    Type: AWS::ElasticLoadBalancingV2::Listener
-
   ListenerPort443:
     Condition: IfUsingWeb
     Properties:
@@ -2034,34 +2021,21 @@ Resources:
       Port: 443
       Protocol: HTTPS
     Type: AWS::ElasticLoadBalancingV2::Listener
-
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
-  # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab > "View/edit rules"
-
-  ListenerRuleApiServer:
+  
+  TcpListenerPort443:
     Condition: IfUsingApiServer
     Properties:
-      Actions:
-        - AuthenticateCognitoConfig:
-            OnUnauthenticatedRequest: authenticate
-            Scope: openid
-            UserPoolArn: !GetAtt "UserPool.Arn"
-            UserPoolClientId: !Ref UserPoolClient
-            UserPoolDomain: !Ref UserPoolDomain
-          Order: 1
-          Type: authenticate-cognito
-        - Type: "forward"
+      DefaultActions:
+        - Type: forward
           TargetGroupArn: !Ref TargetGroupApiServerPublic
-          Order: 2
-      Conditions:
-        - Field: "path-pattern"
-          Values:
-            - "/api/*"
-            - "/api"
-      ListenerArn: !Ref ListenerPort443
-      Priority: 2
-    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+      LoadBalancerArn: !Ref NetworkLoadBalancerPublic
+      Port: 443
+      Protocol: TCP
+    Type: AWS::ElasticLoadBalancingV2::Listener
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
+# AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab > "View/edit rules"
+  
   ListenerRuleSwagger:
     Condition: IfRunSwagger
     Properties:
@@ -2218,22 +2192,44 @@ Resources:
               Value: "true"
             - Name: SENZING_API_SERVER_INIT_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
-            - Name: SENZING_API_SERVER_PORT
-              Value: "8250"
-            - Name: SENZING_API_SERVER_SKIP_ENGINE_PRIMING
-              Value: "true"
-            - Name: SENZING_API_SERVER_SKIP_STARTUP_PERF
-              Value: "true"
-            - Name: SENZING_API_SERVER_URL_BASE_PATH
+            -
+              Name: SENZING_API_SERVER_SECURE_PORT
+              Value: "2443"
+            -
+              Name: SENZING_API_SERVER_SKIP_ENGINE_PRIMING
+              Value: 'true'
+            -
+              Name: SENZING_API_SERVER_SKIP_STARTUP_PERF
+              Value: 'true'
+            -
+              Name: SENZING_API_SERVER_URL_BASE_PATH
               Value: /api
-            - Name: SENZING_API_SERVER_DEBUG
-              Value: "false"
-            - Name: SENZING_API_SERVER_VERBOSE
-              Value: "false"
-            - Name: SENZING_ENGINE_CONFIGURATION_JSON
+            -
+              Name: SENZING_API_SERVER_DEBUG
+              Value: 'false'
+            -
+              Name: SENZING_API_SERVER_VERBOSE
+              Value: 'true'
+            -
+              Name: SENZING_ENGINE_CONFIGURATION_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
             - Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
+            -
+              Name: SENZING_API_SERVER_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerKeyStorePassword}'
+            -
+              Name: SENZING_API_SERVER_KEY_ALIAS
+              Value: !Sub '${SenzingApiServerKeyStoreAlias}'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-client-keystore.p12'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !Sub '${SenzingApiServerClientKeyStorePassword}'
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
@@ -2257,8 +2253,8 @@ Resources:
               ReadOnly: false
           Name: api-server
           PortMappings:
-            - ContainerPort: 8250
-              HostPort: 8250
+            - ContainerPort: 2443
+              HostPort: 2443
               Protocol: tcp
           Privileged: false
           ReadonlyRootFilesystem: false
@@ -2368,6 +2364,12 @@ Resources:
                 save
             - Name: SENZING_LICENSE_BASE64_ENCODED
               Value: !Sub "${SenzingLicenseAsBase64}"
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_BASE64_ENCODED
+              Value: !Sub "${SenzingApiServerKeyStore}"
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_BASE64_ENCODED
+              Value: !Sub "${SenzingApiServerClientKeyStore}"
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
@@ -2676,19 +2678,17 @@ Resources:
   EcsServiceApiServer:
     Condition: IfUsingApiServer
     DependsOn:
-      - LambdaRunnerInitSenzing
-      - ListenerPort443
-      - ListenerRuleApiServer
+     - LambdaRunnerInitSenzing
+     - ListenerPort443
+     - ListenerRuleApiServer
     Properties:
       Cluster: !Ref EcsCluster
       DesiredCount: 1
       EnableECSManagedTags: true
       LaunchType: FARGATE
       LoadBalancers:
-        - ContainerPort: 8250
-          ContainerName: api-server
-          TargetGroupArn: !Ref TargetGroupApiServerPrivate
-        - ContainerPort: 8250
+        -
+          ContainerPort: 2443
           ContainerName: api-server
           TargetGroupArn: !Ref TargetGroupApiServerPublic
       NetworkConfiguration:
@@ -2898,12 +2898,12 @@ Outputs:
     Description: "URL for API Server. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserver"
     Export:
       Name: !Sub "${AWS::StackName}-url-api-server"
-    Value: !Sub "https://${LoadBalancerPublic.DNSName}/api/"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/"
 
   UrlApiServerHeartbeat:
     Condition: IfUsingApiServer
     Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserverheartbeat"
-    Value: !Sub "https://${LoadBalancerPublic.DNSName}/api/heartbeat/"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat/"
 
   UrlSwagger:
     Condition: IfRunSwagger
