@@ -2680,7 +2680,6 @@ Resources:
     DependsOn:
      - LambdaRunnerInitSenzing
      - ListenerPort443
-     - ListenerRuleApiServer
     Properties:
       Cluster: !Ref EcsCluster
       DesiredCount: 1
