@@ -5,7 +5,7 @@ AWS Cloudformation for developers using Senzing HTTP REST API
 
 1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
 
-2. Generate a key store, certificate and trust store using [step 1 & 2 in this guide](https://github.com/Senzing/senzing-api-server#ssl-client-authentication)
+2. Generate a key store, certificate and trust store going through [step 1 & 2 in this guide](https://github.com/Senzing/senzing-api-server#ssl-client-authentication)
 
 3. Convert key store and trust store into base64
 
