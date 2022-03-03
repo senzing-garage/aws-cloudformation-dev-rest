@@ -1,7 +1,35 @@
 # aws-cloudformation-dev-rest
-AWS Cloudformation for developers using Senzing HTTP REST API
 
-## System Admin Guide: How to setup SSL client authentication?
+## Synopsis
+Using the AWS Cloudformation template in this repository, a developer can bring up an AWS stack to interact with Senzing's API server.
+
+## Overview
+
+The following diagram illustrates the AWS stack that would be brought up by the cloudformation template.
+
+Using this stack, a developer could view the api documentation via swagger and access Senzing's api server to interact with Senzing.
+
+![overview diagram](assets/overview_diagram.png)
+
+## Contents
+
+1. [Pre-requisites](#Pre-requisites)
+1. [How to Deploy?](#how-to-deploy)
+1. [Expectations](#expectations)
+
+## Pre-requisites
+
+1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster) 
+1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
+1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
+
+## How to Deploy?
+
+
+
+## How to setup SSL client authentication?
+
+The following instructions would typically be done by a **system admin**.
 
 1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
 
