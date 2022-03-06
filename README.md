@@ -16,6 +16,7 @@ Using this stack, a developer could view the api documentation via swagger and a
 1. [Pre-requisites](#Pre-requisites)
 1. [How to Deploy?](#how-to-deploy)
 1. [How to generate keystores for SSL client authentication?](#how-to-generate-keystores-for-SSL-client-authentication)
+1. [How to interact using SSL client authentication?](#how-to-interact-using-SSL-client-authentication)
 
 ## Pre-requisites
 
@@ -121,12 +122,34 @@ The following instructions would typically be done by a **system admin** before 
 To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
 ```
-curl -k https://localhost:2443/heartbeat \
+curl -k https://<senzing-api-server-url>/heartbeat \
     --cert my-client-store.p12:change-it \
     --cert-type P12
 ```
 
-To get a more in-depth look on how an application can authenticate with the senzing's api server, refer to [here](examples/demo.py)
+To get a more in-depth look on how a sample python application can authenticate with the senzing's api server, refer to [here](examples/demo.py).
+
+To run the sample python application, first export the following variables.
+
+```
+export CLIENT_STORE_PATH=<insert-client-store-file-path>
+export CLIENT_STORE_PASSWORD=change-it
+export API_HEARTBEAT_URL=<senzing-api-server-url>/heartbeat
+export API_SEARCH_URL=<senzing-api-server-url>/search-entities?featureMode=WITH_DUPLICATES&withFeatureStats=false&withInternalFeatures=false&forceMinimal=false&withRelationships=false&withRaw=false
+```
+
+Use this to run the sample application
+
+```
+export FLASK_APP=hello
+flask run
+```
+
+To get the python application to interact the Senzing's api server, simply send the following curl command.
+
+```
+curl http://127.0.0.1:5000/
+```
 
 ## References
 
