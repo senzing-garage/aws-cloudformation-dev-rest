@@ -110,15 +110,21 @@ The following instructions would typically be done by a **system admin** before 
            -storetype PKCS12 \
            -storepass change-it   
    ```
-1. Convert sz-api-server-store.p12 and client-trust-store.p12 into base64
+1. Convert sz-api-server-store.p12 and client-trust-store.p12 into a base64 string.
 
 1. Insert base64 string into cloudformation stack
 
 ![cloudformation stack](assets/cft_input.png)
 
-## Developers Guide: How to authenticate using SSL client authentication?
+## How to interact using SSL client authentication?
 
-As a developer you can make a curl call by going through [step 4 & 5 in this guide](https://github.com/Senzing/senzing-api-server#ssl-client-authentication)
+To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
+
+```
+curl -k https://localhost:2443/heartbeat \
+    --cert my-client-store.p12:change-it \
+    --cert-type P12
+```
 
 To get a more in-depth look on how an application can authenticate with the senzing's api server, refer to [here](examples/demo.py)
 
