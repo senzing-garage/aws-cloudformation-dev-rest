@@ -63,13 +63,56 @@ Using this stack, a developer could view the api documentation via swagger and a
 
 ## How to generate keystores for SSL client authentication?
 
-The following instructions would typically be done by a **system admin**.
+The following instructions would typically be done by a **system admin** before bringing up this cloudformation template.
 
-1. Generate a key store, certificate and trust store going through [step 1 & 2 in this guide](https://github.com/Senzing/senzing-api-server#ssl-client-authentication)
+1. Create the server PKCS12 key store (`sz-api-server-store.p12`).
+   **NOTE:** you will be prompted to provide the 7 fields for the Distinguished Name
+   ("DN") for the certificate being generated.
+   ```console
+   keytool -genkey \
+           -alias sz-api-server \
+           -keystore sz-api-server-store.p12 \
+           -storetype PKCS12 \
+           -keyalg RSA \
+           -storepass change-it \
+           -validity 730 \
+           -keysize 2048
+   ```
 
-1. Convert key store and trust store into base64
+1. Create the client PKCS12 key store. We will assume a single authorized client certificate for our example
+   purposes.  So first, let's create the client key and certificate for the
+   client to use.  **NOTE:** you will be prompted to provide the 7 fields for
+   the Distinguished Name ("DN") for the certificate being generated.
+   ```console
+   keytool -genkey \
+           -alias my-client \
+           -keystore my-client-store.p12 \
+           -storetype PKCS12 \
+           -keyalg RSA \
+           -storepass change-it \
+           -validity 730 \
+           -keysize 2048
+   ```
 
-1. Put base64 output into cloudformation stack
+1. Export the client certificate and create a trust store containing it.
+   ```console
+   keytool -export \
+           -keystore my-client-store.p12 \
+           -storepass change-it \
+           -storetype PKCS12 \
+           -alias my-client \
+           -file my-client.cer
+   
+   keytool -import \
+           -file my-client.cer \
+           -alias my-client \
+           -keystore client-trust-store.p12 \
+           -storetype PKCS12 \
+           -storepass change-it   
+   ```
+1. Convert sz-api-server-store.p12 and client-trust-store.p12 into base64
+
+1. Insert base64 string into cloudformation stack
 
 ![cloudformation stack](assets/cft_input.png)
 
