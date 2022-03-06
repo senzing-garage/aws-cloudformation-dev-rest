@@ -121,7 +121,7 @@ The following instructions would typically be done by a **system admin** before 
 
 Firstly, retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
 
-![api url](assets/cloudformation_output_api_url.png)
+![api url](assets/cloudformation_output_api.png)
 
 To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
