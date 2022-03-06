@@ -119,6 +119,10 @@ The following instructions would typically be done by a **system admin** before 
 
 ## How to interact using SSL client authentication?
 
+Firstly, retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
+
+![api url](assets/cloudformation_output_api_url.png)
+
 To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
 ```
@@ -138,14 +142,16 @@ export API_HEARTBEAT_URL=<senzing-api-server-url>/heartbeat
 export API_SEARCH_URL=<senzing-api-server-url>/search-entities?featureMode=WITH_DUPLICATES&withFeatureStats=false&withInternalFeatures=false&forceMinimal=false&withRelationships=false&withRaw=false
 ```
 
-Use this to run the sample application
+Then, use the following commands to run the sample application.
 
 ```
-export FLASK_APP=hello
+cd examples
+pip install -r requirements.txt
+export FLASK_APP=demo
 flask run
 ```
 
-To get the python application to interact the Senzing's api server, simply send the following curl command.
+To get the sample python application to interact the Senzing's api server, simply send the following curl command.
 
 ```
 curl http://127.0.0.1:5000/
