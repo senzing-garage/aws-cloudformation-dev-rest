@@ -111,19 +111,19 @@ The following instructions would typically be done by a **system admin** before 
            -storetype PKCS12 \
            -storepass change-it   
    ```
-1. Convert sz-api-server-store.p12 and client-trust-store.p12 into a base64 string.
+1. Convert sz-api-server-store.p12 and client-trust-store.p12 to a base64 string.
 
-1. Insert base64 string into cloudformation stack
+1. Insert base64 string into the cloudformation stack
 
 ![cloudformation stack](assets/cft_input.png)
 
 ## How to interact using SSL client authentication?
 
-Firstly, retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
+1. Retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
 
 ![api url](assets/cloudformation_output_api.png)
 
-To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
+2. To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
 ```
 curl -k https://<senzing-api-server-url>/heartbeat \
@@ -133,7 +133,7 @@ curl -k https://<senzing-api-server-url>/heartbeat \
 
 To get a more in-depth look on how a sample python application can authenticate with the senzing's api server, refer to [here](examples/demo.py).
 
-To run the sample python application, first export the following variables.
+1. To run the sample python application, first export the following variables.
 
 ```
 export CLIENT_STORE_PATH=<insert-client-store-file-path>
@@ -142,7 +142,7 @@ export API_HEARTBEAT_URL=<senzing-api-server-url>/heartbeat
 export API_SEARCH_URL=<senzing-api-server-url>/search-entities?featureMode=WITH_DUPLICATES&withFeatureStats=false&withInternalFeatures=false&forceMinimal=false&withRelationships=false&withRaw=false
 ```
 
-Then, use the following commands to run the sample application.
+2. Use the following commands to run the sample application.
 
 ```
 cd examples
@@ -151,7 +151,7 @@ export FLASK_APP=demo
 flask run
 ```
 
-To get the sample python application to interact the Senzing's api server, simply send the following curl command.
+3. To get the sample python application to interact the Senzing's api server, simply send the following curl command.
 
 ```
 curl http://127.0.0.1:5000/
