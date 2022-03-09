@@ -2,11 +2,13 @@
 
 ## Synopsis
 
-Using the AWS Cloudformation template in this repository, a developer can bring up an AWS stack to interact with Senzing's API server.
+Using the AWS Cloudformation template in this repository,
+a developer can bring up an AWS stack to interact with Senzing's API server
+in a secure manner.
 
 ## Overview
 
-The following diagram illustrates the AWS stack that would be brought up by the cloudformation template.
+The following diagram illustrates a Senzing stack that would be brought up by the AWS CloudFormation template.
 
 Using this stack, a developer could view the api documentation via swagger and access Senzing's api server to interact with Senzing.
 
@@ -18,6 +20,8 @@ Using this stack, a developer could view the api documentation via swagger and a
 1. [How to Deploy](#how-to-deploy)
 1. [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
 1. [How to interact using SSL client authentication](#how-to-interact-using-ssl-client-authentication)
+1. [Example application](#example-application)
+1. [References](#references)
 
 ## Pre-requisites
 
@@ -28,7 +32,7 @@ Using this stack, a developer could view the api documentation via swagger and a
     1. FIXME:  If the `keytool` is already installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
-## How to Deploy?
+## How to Deploy
 
 1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
    With appropriate permissions, the
@@ -74,7 +78,8 @@ Using this stack, a developer could view the api documentation via swagger and a
 
 ## How to generate keystores for SSL client authentication
 
-The following instructions would typically be done by a **system admin** before bringing up this cloudformation template.
+The following example instructions would typically be done by a **system admin**
+before bringing up this cloudformation template.
 
 1. :pencil2: Create values for variables.
    Example:
