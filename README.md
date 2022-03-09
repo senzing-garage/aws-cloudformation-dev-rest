@@ -98,7 +98,7 @@ The following instructions would typically be done by a **system admin** before 
     export KEYTOOL_SERVER_STORE_FILE_BASE64=${KEYTOOL_SERVER_STORE_FILE}.base64
     ```
 
-1. Create the *server* PKCS12 key store (`sz-api-server-store.p12`).
+1. Create the *server* PKCS12 key store (`KEYTOOL_SERVER_STORE_FILE`).
 
    **NOTE:** Answer prompts for the 7 fields for the Distinguished Name ("DN") for the certificate being generated.
    Example:
@@ -115,7 +115,7 @@ The following instructions would typically be done by a **system admin** before 
         -validity 730
     ```
 
-1. Create the *client* PKCS12 key store.
+1. Create the *client* PKCS12 key store (`KEYTOOL_CLIENT_STORE_FILE`).
    A single authorized client certificate is assumed for example purposes.
    Create the client key and certificate for the client to use.
 
@@ -134,7 +134,7 @@ The following instructions would typically be done by a **system admin** before 
         -validity 730
     ```
 
-1. Export the client certificate.
+1. Export the client certificate (`KEYTOOL_CLIENT_CERTIFICATE_FILE`).
    Example:
 
     ```console
@@ -147,7 +147,7 @@ The following instructions would typically be done by a **system admin** before 
         -storetype PKCS12
     ```
 
-1. Create a trust store containing certificate.
+1. Create a trust store containing certificate (`KEYTOOL_CLIENT_TRUST_STORE_FILE`).
    Example:
 
     ```console
