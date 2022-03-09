@@ -35,7 +35,6 @@ Using this stack, a developer could view the api documentation via swagger and a
 ## Generate keystores for SSL client authentication
 
 :thinking: **Optional:**
-
 The following example instructions would typically be done by a **system admin**
 before bringing up this cloudformation template.
 If values for
@@ -145,10 +144,6 @@ To create SSL credentials:
       ${KEYTOOL_SERVER_STORE_FILE} \
       >> ${KEYTOOL_SERVER_STORE_FILE_BASE64}
     ```
-
-1. Insert base64 string into the cloudformation stack.
-
-![cloudformation stack](assets/cft_input.png)
 
 ## Deploy
 
