@@ -52,7 +52,8 @@ Using this stack, a developer could view the api documentation via swagger and a
                Cloudformation stack
                Example:  `senzing-db`
         1. In **Security**
-           *Note:* the following assumes a "Server store file" and "Client trust store file"
+
+           :warning: the following assumes a "Server store file" and "Client trust store file"
            have been created. If not, see
            [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client authentication).
             1. Enter your email address.
