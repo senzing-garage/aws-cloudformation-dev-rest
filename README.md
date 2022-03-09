@@ -53,7 +53,7 @@ Using this stack, a developer could view the api documentation via swagger and a
                Example:  `senzing-db`
         1. In **Security**
 
-           :warning: the following assumes a "Server store file" and "Client trust store file"
+           :warning: The following assumes a "Server store file" and "Client trust store file"
            have been created.
            If not, see
            [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication).
@@ -62,15 +62,15 @@ Using this stack, a developer could view the api documentation via swagger and a
                 1. Example: `me@example.com`
             1. Enter the permitted IP address block
             1. Enter a base64 representation of the *server* keystore
-                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` file created below.
+                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` file.
             1. Enter the server keystore password
-                1. Example: Value of `KEYTOOL_SERVER_PASSWORD` created below.
+                1. Example: Value of `KEYTOOL_SERVER_PASSWORD`.
             1. Enter the server keystore alias
-                1. Example: Value of `KEYTOOL_SERVER_ALIAS` created below.
+                1. Example: Value of `KEYTOOL_SERVER_ALIAS`.
             1. Enter a base64 representation of the *client* keystore
-                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` file created below.
+                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` file.
             1. Enter the client keystore password
-                1. Example: Value of `KEYTOOL_CLIENT_PASSWORD` created below.
+                1. Example: Value of `KEYTOOL_CLIENT_PASSWORD`.
         1. In **Security responsibility**
             1. Understand the nature of the security in the deployment.
             1. Once understood, enter "I AGREE".
