@@ -196,7 +196,6 @@ before bringing up this cloudformation template.
 
    ![api url](assets/cloudformation_output_api.png)
 
-   **Note:** No trailing slash.
    Example:
 
     ```console
