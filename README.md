@@ -32,60 +32,22 @@ Using this stack, a developer could view the api documentation via swagger and a
     1. FIXME:  If the `keytool` is already installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
-## Deploy
-
-1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
-   With appropriate permissions, the
-   [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
-   can help evaluate costs.
-1. Visit [AWS Cloudformation with dev-rest template](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sz-dev&templateURL=https://s3.amazonaws.com/public-read-access/aws-cloudformation-dev-rest/cloudformation.yaml)
-1. At lower-right, click on "Next" button.
-1. In **Specify stack details**
-    1. In **Parameters**
-        1. In **Senzing installation**
-            1. Accept the End User License Agreement
-            1. Adjust the Senzing version, if necessary
-            1. If using more than 100k records, input base64 encoded license string
-        1. In **Identify existing database stack**
-            1. Enter the stack name of the previously deployed
-               [aws-cloudformation-database-cluster](https://github.com/Senzing/aws-cloudformation-database-cluster)
-               Cloudformation stack
-               Example:  `senzing-db`
-        1. In **Security**
-
-           :warning: The following assumes a "Server store file" and "Client trust store file"
-           have been created.
-           If not, see
-           [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication).
-
-            1. Enter your email address.
-                1. Example: `me@example.com`
-            1. Enter the permitted IP address block
-            1. Enter a base64 representation of the *server* keystore
-                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` file.
-            1. Enter the server keystore password
-                1. Example: Value of `KEYTOOL_SERVER_PASSWORD`.
-            1. Enter the server keystore alias
-                1. Example: Value of `KEYTOOL_SERVER_ALIAS`.
-            1. Enter a base64 representation of the *client* keystore
-                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` file.
-            1. Enter the client keystore password
-                1. Example: Value of `KEYTOOL_CLIENT_PASSWORD`.
-        1. In **Security responsibility**
-            1. Understand the nature of the security in the deployment.
-            1. Once understood, enter "I AGREE".
-    1. At lower-right, click "Next" button.
-1. In **Configure stack options**
-    1. At lower-right, click "Next" button.
-1. In **Review senzing-basic**
-    1. Near the bottom, in **Capabilities**
-        1. Check ":ballot_box_with_check: I acknowledge that AWS CloudFormation might create IAM resources."
-    1. At lower-right, click "Create stack" button.
-
 ## Generate keystores for SSL client authentication
+
+:thinking: **Optional:**
 
 The following example instructions would typically be done by a **system admin**
 before bringing up this cloudformation template.
+If values for
+`KEYTOOL_SERVER_STORE_FILE_BASE64`,
+`KEYTOOL_SERVER_PASSWORD`,
+`KEYTOOL_SERVER_ALIAS`,
+`KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64`, and
+`KEYTOOL_CLIENT_PASSWORD`
+already exist, then skip forward to
+[Deploy](#deploy).
+
+To create SSL credentials:
 
 1. :pencil2: Create values for variables.
    Example:
@@ -187,6 +149,56 @@ before bringing up this cloudformation template.
 1. Insert base64 string into the cloudformation stack.
 
 ![cloudformation stack](assets/cft_input.png)
+
+## Deploy
+
+1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
+   With appropriate permissions, the
+   [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
+   can help evaluate costs.
+1. Visit [AWS Cloudformation with dev-rest template](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sz-dev&templateURL=https://s3.amazonaws.com/public-read-access/aws-cloudformation-dev-rest/cloudformation.yaml)
+1. At lower-right, click on "Next" button.
+1. In **Specify stack details**
+    1. In **Parameters**
+        1. In **Senzing installation**
+            1. Accept the End User License Agreement
+            1. Adjust the Senzing version, if necessary
+            1. If using more than 100k records, input base64 encoded license string
+        1. In **Identify existing database stack**
+            1. Enter the stack name of the previously deployed
+               [aws-cloudformation-database-cluster](https://github.com/Senzing/aws-cloudformation-database-cluster)
+               Cloudformation stack
+               Example:  `senzing-db`
+        1. In **Security**
+
+           :warning: The following assumes a "Server store file" and "Client trust store file"
+           have been created.
+           If not, see
+           [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication).
+
+            1. Enter your email address.
+                1. Example: `me@example.com`
+            1. Enter the permitted IP address block
+            1. Enter a base64 representation of the *server* keystore
+                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` file.
+            1. Enter the server keystore password
+                1. Example: Value of `KEYTOOL_SERVER_PASSWORD`.
+            1. Enter the server keystore alias
+                1. Example: Value of `KEYTOOL_SERVER_ALIAS`.
+            1. Enter a base64 representation of the *client* keystore
+                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` file.
+            1. Enter the client keystore password
+                1. Example: Value of `KEYTOOL_CLIENT_PASSWORD`.
+        1. In **Security responsibility**
+            1. Understand the nature of the security in the deployment.
+            1. Once understood, enter "I AGREE".
+    1. At lower-right, click "Next" button.
+1. In **Configure stack options**
+    1. At lower-right, click "Next" button.
+1. In **Review senzing-basic**
+    1. Near the bottom, in **Capabilities**
+        1. Check ":ballot_box_with_check: I acknowledge that AWS CloudFormation might create IAM resources."
+    1. At lower-right, click "Create stack" button.
 
 ## Interact with Senzing API Server using SSL client authentication
 
