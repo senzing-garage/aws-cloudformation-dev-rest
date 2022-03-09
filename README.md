@@ -25,7 +25,7 @@ Using this stack, a developer could view the api documentation via swagger and a
 1. FIXME: Install `keytool`
     1. FIXME: Make it clear what needs to be installed and why a certain version is needed.
     1. FIXME: Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
-    1. FIXME:  If you already have `keytool` installed...
+    1. FIXME:  If the `keytool` is already installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
 ## How to Deploy?
@@ -205,9 +205,9 @@ The following instructions would typically be done by a **system admin** before 
    ![api url](assets/cloudformation_output_api.png)
 
 1. To interact directly with the Senzing API server,
-   you can make a curl call with the `--cert` and `--cert-type` options
-   to get curl to authenticate itself to the API server.
-   Example:;
+   use the `--cert` and `--cert-type` options of
+   `curl` to authenticate to the API server.
+   Example:
 
     ```console
     curl \
@@ -217,9 +217,14 @@ The following instructions would typically be done by a **system admin** before 
         ${SENZING_API_SERVER_URL}/heartbeat
     ```
 
-To get a more in-depth look on how a sample python application can authenticate with the senzing's api server, refer to [here](examples/demo.py).
+## Example application
 
-1. To run the sample python application, first export the following variables.
+An example python application that authenticates with the senzing's api server
+is seen at [demo.py](examples/demo.py).
+
+To run the example python application:
+
+1. Export the following variables.
    Example:
 
     ```console
@@ -228,7 +233,7 @@ To get a more in-depth look on how a sample python application can authenticate 
     export API_HEARTBEAT_URL=${SENZING_API_SERVER_URL}
     ```
 
-1. Use the following commands to run the sample application.
+1. Use the following commands to run the example application.
    Example:
 
     ```console
