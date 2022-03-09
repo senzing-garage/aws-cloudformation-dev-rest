@@ -224,7 +224,7 @@ is seen at [demo.py](examples/demo.py).
 
 To run the example python application:
 
-1. Clone repository
+1. Clone repository.
    First, set these environment variable values:
 
     ```console
@@ -257,7 +257,8 @@ To run the example python application:
     flask run
     ```
 
-1. To get the sample python application to interact the Senzing's api server, simply send the following curl command.
+1. To get the example python application to interact the Senzing's api server,
+   simply send the following `curl` commands.
    Example:
 
     ```console
