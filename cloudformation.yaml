@@ -131,29 +131,29 @@ Parameters:
   SenzingApiServerKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystore'
     Type: String
-
 
   SenzingApiServerKeyStorePassword:
     Default: '_'
     Description: 'Senzing API Server Key Store Password'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorepassword'
     Type: String
 
   SenzingApiServerKeyStoreAlias:
     Default: '_'
-    Description: 'Senzing API Server Client Key Store Alias'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorealias'
     Type: String
 
   SenzingApiServerClientKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystore'
     Type: String
 
   SenzingApiServerClientKeyStorePassword:
     Default: '_'
-    Description: 'Senzing API Server Client Key Store Password'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystorepassword'
     Type: String
 
   SenzingVersion:

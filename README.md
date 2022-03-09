@@ -212,10 +212,10 @@ The following instructions would typically be done by a **system admin** before 
 
     ```console
     curl \
-        --cert ${KEYTOOL_CLIENT_STORE_FILE}:${KEYTOOL_CLIENT_PASSWORD} \
-        --cert-type P12 \
         --insecure \
-        ${SENZING_API_SERVER_URL}/heartbeat
+        ${SENZING_API_SERVER_URL}/heartbeat \
+        --cert ${KEYTOOL_CLIENT_STORE_FILE}:${KEYTOOL_CLIENT_PASSWORD} \
+        --cert-type P12
     ```
 
 ## Example application
