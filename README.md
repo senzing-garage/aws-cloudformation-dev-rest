@@ -196,8 +196,8 @@ To get a more in-depth look on how a sample python application can authenticate 
    Example:
 
     ```console
-    export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE} \
-    export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD} \
+    export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE}
+    export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD}
     export API_HEARTBEAT_URL=<senzing-api-server-url>
     ```
 
