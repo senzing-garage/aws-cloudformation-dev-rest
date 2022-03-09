@@ -62,11 +62,11 @@ Metadata:
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
       SenzingApiServerClientKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
+        default: 'To enable mtls authentication in the api server, provide the client keystore containing the relevant certificates'
       SenzingApiServerClientKeyStorePassword:
         default: 'If enabling mtls authentication, provide client keystore password'
       SenzingApiServerKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
+        default: 'To enable mtls authentication in the api server, provide the server keystore containing the relevant certificates'
       SenzingApiServerKeyStorePassword:
         default: 'If enabling mtls authentication, provide server keystore password'
       SenzingApiServerKeyStoreAlias:
@@ -127,7 +127,7 @@ Parameters:
     Default: " "
     Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
     Type: String
-  
+
   SenzingApiServerKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
@@ -139,18 +139,18 @@ Parameters:
     Default: '_'
     Description: 'Senzing API Server Key Store Password'
     Type: String
-  
+
   SenzingApiServerKeyStoreAlias:
     Default: '_'
     Description: 'Senzing API Server Client Key Store Alias'
     Type: String
-  
+
   SenzingApiServerClientKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Type: String
-  
+
   SenzingApiServerClientKeyStorePassword:
     Default: '_'
     Description: 'Senzing API Server Client Key Store Password'
@@ -1933,7 +1933,7 @@ Resources:
             - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-  
+
   NetworkLoadBalancerPublic:
     Condition: IfUsingApiServer
     Properties:
@@ -2021,7 +2021,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
     Type: AWS::ElasticLoadBalancingV2::Listener
-  
+
   TcpListenerPort443:
     Condition: IfUsingApiServer
     Properties:
@@ -2035,7 +2035,7 @@ Resources:
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab > "View/edit rules"
-  
+
   ListenerRuleSwagger:
     Condition: IfRunSwagger
     Properties:

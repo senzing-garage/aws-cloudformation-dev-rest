@@ -1,6 +1,7 @@
 # aws-cloudformation-dev-rest
 
 ## Synopsis
+
 Using the AWS Cloudformation template in this repository, a developer can bring up an AWS stack to interact with Senzing's API server.
 
 ## Overview
@@ -13,15 +14,16 @@ Using this stack, a developer could view the api documentation via swagger and a
 
 ## Contents
 
-1. [Pre-requisites](#Pre-requisites)
-1. [How to Deploy?](#how-to-deploy)
-1. [How to generate keystores for SSL client authentication?](#how-to-generate-keystores-for-SSL-client-authentication)
-1. [How to interact using SSL client authentication?](#how-to-interact-using-SSL-client-authentication)
+1. [Pre-requisites](#pre-requisites)
+1. [How to Deploy](#how-to-deploy)
+1. [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
+1. [How to interact using SSL client authentication](#how-to-interact-using-ssl-client-authentication)
 
 ## Pre-requisites
 
-1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster) 
+1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
 1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
+   FIXME:  If you already have `keytool` installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
 ## How to Deploy?
@@ -46,29 +48,32 @@ Using this stack, a developer could view the api documentation via swagger and a
         1. In **Security**
             1. Enter your email address.  Example: `me@example.com`
             1. Enter the permitted IP address block
-            1. Enter a base64 representation of the server keystore with the relevant certificates loaded in
+            1. Enter a base64 representation of the *server* keystore
+                1. For more information, see
+                   [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
             1. Enter the server keystore password
             1. Enter the server keystore alias
-            1. Enter a base64 representation of the client keystore with the relevant certificates loaded in
+            1. Enter a base64 representation of the *client* keystore
             1. Enter the client keystore password
         1. In **Security responsibility**
             1. Understand the nature of the security in the deployment.
             1. Once understood, enter "I AGREE".
-    2. At lower-right, click "Next" button.
-2. In **Configure stack options**
     1. At lower-right, click "Next" button.
-3. In **Review senzing-basic**
+1. In **Configure stack options**
+    1. At lower-right, click "Next" button.
+1. In **Review senzing-basic**
     1. Near the bottom, in **Capabilities**
         1. Check ":ballot_box_with_check: I acknowledge that AWS CloudFormation might create IAM resources."
-    2. At lower-right, click "Create stack" button.
+    1. At lower-right, click "Create stack" button.
 
-## How to generate keystores for SSL client authentication?
+## How to generate keystores for SSL client authentication
 
 The following instructions would typically be done by a **system admin** before bringing up this cloudformation template.
 
 1. Create the server PKCS12 key store (`sz-api-server-store.p12`).
    **NOTE:** you will be prompted to provide the 7 fields for the Distinguished Name
    ("DN") for the certificate being generated.
+
    ```console
    keytool -genkey \
            -alias sz-api-server \
@@ -84,6 +89,7 @@ The following instructions would typically be done by a **system admin** before 
    purposes.  So first, let's create the client key and certificate for the
    client to use.  **NOTE:** you will be prompted to provide the 7 fields for
    the Distinguished Name ("DN") for the certificate being generated.
+
    ```console
    keytool -genkey \
            -alias my-client \
@@ -96,6 +102,7 @@ The following instructions would typically be done by a **system admin** before 
    ```
 
 1. Export the client certificate and create a trust store containing it.
+
    ```console
    keytool -export \
            -keystore my-client-store.p12 \
@@ -103,16 +110,16 @@ The following instructions would typically be done by a **system admin** before 
            -storetype PKCS12 \
            -alias my-client \
            -file my-client.cer
-   
+
    keytool -import \
            -file my-client.cer \
            -alias my-client \
            -keystore client-trust-store.p12 \
            -storetype PKCS12 \
-           -storepass change-it   
+           -storepass change-it
    ```
-1. Convert sz-api-server-store.p12 and client-trust-store.p12 to a base64 string.
 
+1. Convert sz-api-server-store.p12 and client-trust-store.p12 to a base64 string.
 1. Insert base64 string into the cloudformation stack
 
 ![cloudformation stack](assets/cft_input.png)
@@ -123,9 +130,9 @@ The following instructions would typically be done by a **system admin** before 
 
 ![api url](assets/cloudformation_output_api.png)
 
-2. To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
+1. To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
-```
+```console
 curl -k https://<senzing-api-server-url>/heartbeat \
     --cert my-client-store.p12:change-it \
     --cert-type P12
@@ -135,29 +142,30 @@ To get a more in-depth look on how a sample python application can authenticate 
 
 1. To run the sample python application, first export the following variables.
 
-```
+```console
 export CLIENT_STORE_PATH=<insert-client-store-file-path> \
 export CLIENT_STORE_PASSWORD=<insert-client-store-password> \
 export API_HEARTBEAT_URL=<senzing-api-server-url>
 ```
 
-2. Use the following commands to run the sample application.
+1. Use the following commands to run the sample application.
 
-```
+```console
 cd examples
 pip install -r requirements.txt
 export FLASK_APP=demo
 flask run
 ```
 
-3. To get the sample python application to interact the Senzing's api server, simply send the following curl command.
+1. To get the sample python application to interact the Senzing's api server, simply send the following curl command.
 
-```
+```console
 curl http://127.0.0.1:5000/
 ```
 
 ## References
 
-To understand mutual TLS authentication better, refer to the resources here
+To understand mutual TLS authentication better, refer to the resources here:
+
 - [What is Mutual TLS Authentication?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/)
 - [Difference between key store and trust store](https://www.baeldung.com/java-keystore-truststore-difference)
