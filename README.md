@@ -197,7 +197,7 @@ To create SSL credentials:
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: Retrieve the Senzing API Server url from the cloudformation stack that was brought up.
+1. :pencil2: Retrieve the Senzing API Server URL from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
    This is what it looks like in the AWS Cloudformation management console:
 
