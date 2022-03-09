@@ -200,6 +200,8 @@ The following instructions would typically be done by a **system admin** before 
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api/
     ```
 
+   This is what it looks like in the AWS Cloudformation management console:
+
    ![api url](assets/cloudformation_output_api.png)
 
 1. To interact directly with the Senzing API server,
