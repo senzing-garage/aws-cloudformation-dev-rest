@@ -22,8 +22,10 @@ Using this stack, a developer could view the api documentation via swagger and a
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
-   FIXME:  If you already have `keytool` installed...
+1. FIXME: Install `keytool`
+    1. FIXME: Make it clear what needs to be installed and why a certain version is needed.
+    1. FIXME: Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
+    1. FIXME:  If you already have `keytool` installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
 ## How to Deploy?
@@ -46,15 +48,19 @@ Using this stack, a developer could view the api documentation via swagger and a
                Cloudformation stack
                Example:  `senzing-db`
         1. In **Security**
-            1. Enter your email address.  Example: `me@example.com`
+            1. Enter your email address.
+                1. Example: `me@example.com`
             1. Enter the permitted IP address block
             1. Enter a base64 representation of the *server* keystore
-                1. For more information, see
-                   [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
+                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` created below.
             1. Enter the server keystore password
+                1. Example: Contents of `KEYTOOL_SERVER_PASSWORD` created below.
             1. Enter the server keystore alias
+                1. Example: Contents of `KEYTOOL_SERVER_ALIAS` created below.
             1. Enter a base64 representation of the *client* keystore
+                1. Example: Contents of `KEYTOOL_CLIENT_STORE_FILE_BASE64` created below.
             1. Enter the client keystore password
+                1. Example: Contents of `KEYTOOL_CLIENT_PASSWORD` created below.
         1. In **Security responsibility**
             1. Understand the nature of the security in the deployment.
             1. Once understood, enter "I AGREE".
@@ -70,56 +76,102 @@ Using this stack, a developer could view the api documentation via swagger and a
 
 The following instructions would typically be done by a **system admin** before bringing up this cloudformation template.
 
+1. :pencil2: Create values for variables.
+   Example:
+
+    ```console
+    export KEYTOOL_CLIENT_ALIAS=my-senzing-client
+    export KEYTOOL_CLIENT_CERTIFICATE_FILE=~/my-senzing-client.cer
+    export KEYTOOL_CLIENT_PASSWORD=BadClientPassword
+    export KEYTOOL_CLIENT_STORE_FILE=~/my-senzing-client-store.p12
+    export KEYTOOL_SERVER_ALIAS=my-senzing-server
+    export KEYTOOL_SERVER_PASSWORD=BadServerPassword
+    export KEYTOOL_SERVER_STORE_FILE=~/my-senzing-server-store.p12
+    ```
+
+1. Synthesize variables.
+   Example:
+
+    ```console
+    export KEYTOOL_CLIENT_STORE_FILE_BASE64=${KEYTOOL_CLIENT_STORE_FILE}.base64
+    export KEYTOOL_SERVER_STORE_FILE_BASE64=${KEYTOOL_SERVER_STORE_FILE}.base64
+    ```
+
 1. Create the server PKCS12 key store (`sz-api-server-store.p12`).
    **NOTE:** you will be prompted to provide the 7 fields for the Distinguished Name
    ("DN") for the certificate being generated.
+   Example:
 
-   ```console
-   keytool -genkey \
-           -alias sz-api-server \
-           -keystore sz-api-server-store.p12 \
-           -storetype PKCS12 \
-           -keyalg RSA \
-           -storepass change-it \
-           -validity 730 \
-           -keysize 2048
-   ```
+
+    ```console
+    keytool \
+        -alias ${KEYTOOL_SERVER_ALIAS} \
+        -genkey \
+        -keyalg RSA \
+        -keysize 2048 \
+        -keystore ${KEYTOOL_SERVER_STORE_FILE} \
+        -storepass ${KEYTOOL_SERVER_PASSWORD} \
+        -storetype PKCS12 \
+        -validity 730
+    ```
 
 1. Create the client PKCS12 key store. We will assume a single authorized client certificate for our example
    purposes.  So first, let's create the client key and certificate for the
    client to use.  **NOTE:** you will be prompted to provide the 7 fields for
    the Distinguished Name ("DN") for the certificate being generated.
+   Example:
 
-   ```console
-   keytool -genkey \
-           -alias my-client \
-           -keystore my-client-store.p12 \
-           -storetype PKCS12 \
-           -keyalg RSA \
-           -storepass change-it \
-           -validity 730 \
-           -keysize 2048
-   ```
+    ```console
+    keytool \
+        -alias ${KEYTOOL_CLIENT_ALIAS} \
+        -genkey \
+        -keyalg RSA \
+        -keysize 2048
+        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
+        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
+        -storetype PKCS12 \
+        -validity 730 \
+    ```
 
 1. Export the client certificate and create a trust store containing it.
+   Example:
 
-   ```console
-   keytool -export \
-           -keystore my-client-store.p12 \
-           -storepass change-it \
-           -storetype PKCS12 \
-           -alias my-client \
-           -file my-client.cer
+    ```console
+    keytool \
+        -alias ${KEYTOOL_CLIENT_ALIAS} \
+        -export \
+        -file ${KEYTOOL_CLIENT_CERTIFICATE_FILE} \
+        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
+        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
+        -storetype PKCS12
+    ```
 
-   keytool -import \
-           -file my-client.cer \
-           -alias my-client \
-           -keystore client-trust-store.p12 \
-           -storetype PKCS12 \
-           -storepass change-it
-   ```
+1. Create a trust store containing certificate.
+   Example:
 
-1. Convert sz-api-server-store.p12 and client-trust-store.p12 to a base64 string.
+    ```console
+    keytool \
+        -alias ${KEYTOOL_CLIENT_ALIAS} \
+        -file ${KEYTOOL_CLIENT_CERTIFICATE_FILE} \
+        -import \
+        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
+        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
+        -storetype PKCS12
+    ```
+
+1. Convert server store and client store `.p12` files base64 strings.
+   Example:
+
+    ```console
+    base64 \
+      ${KEYTOOL_CLIENT_STORE_FILE} \
+      >> ${KEYTOOL_CLIENT_STORE_FILE_BASE64}
+
+    base64 \
+      ${KEYTOOL_SERVER_STORE_FILE} \
+      >> ${KEYTOOL_SERVER_STORE_FILE_BASE64}
+    ```
+
 1. Insert base64 string into the cloudformation stack
 
 ![cloudformation stack](assets/cft_input.png)

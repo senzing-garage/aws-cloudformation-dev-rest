@@ -62,11 +62,11 @@ Metadata:
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
       SenzingApiServerClientKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the client keystore containing the relevant certificates'
+        default: 'To enable mtls authentication in the api server, please input base-64 encoded client keystore string'
       SenzingApiServerClientKeyStorePassword:
         default: 'If enabling mtls authentication, provide client keystore password'
       SenzingApiServerKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the server keystore containing the relevant certificates'
+        default: 'To enable mtls authentication in the api server, please input base-64 encoded server keystore string'
       SenzingApiServerKeyStorePassword:
         default: 'If enabling mtls authentication, provide server keystore password'
       SenzingApiServerKeyStoreAlias:
@@ -74,7 +74,7 @@ Metadata:
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
-          If using more than 100k records, please input base 64 encoded license string.
+          If using more than 100k records, please input base-64 encoded license string.
       SenzingVersion:
         default: "Required: Version of Senzing to install."
 
