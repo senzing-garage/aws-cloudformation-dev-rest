@@ -136,10 +136,9 @@ To get a more in-depth look on how a sample python application can authenticate 
 1. To run the sample python application, first export the following variables.
 
 ```
-export CLIENT_STORE_PATH=<insert-client-store-file-path>
-export CLIENT_STORE_PASSWORD=change-it
-export API_HEARTBEAT_URL=<senzing-api-server-url>/heartbeat
-export API_SEARCH_URL=<senzing-api-server-url>/search-entities?featureMode=WITH_DUPLICATES&withFeatureStats=false&withInternalFeatures=false&forceMinimal=false&withRelationships=false&withRaw=false
+export CLIENT_STORE_PATH=<insert-client-store-file-path> \
+export CLIENT_STORE_PASSWORD=<insert-client-store-password> \
+export API_HEARTBEAT_URL=<senzing-api-server-url>
 ```
 
 2. Use the following commands to run the sample application.
