@@ -97,11 +97,10 @@ The following instructions would typically be done by a **system admin** before 
     export KEYTOOL_SERVER_STORE_FILE_BASE64=${KEYTOOL_SERVER_STORE_FILE}.base64
     ```
 
-1. Create the server PKCS12 key store (`sz-api-server-store.p12`).
-   **NOTE:** you will be prompted to provide the 7 fields for the Distinguished Name
-   ("DN") for the certificate being generated.
-   Example:
+1. Create the *server* PKCS12 key store (`sz-api-server-store.p12`).
 
+   **NOTE:** Answer prompts for the 7 fields for the Distinguished Name ("DN") for the certificate being generated.
+   Example:
 
     ```console
     keytool \
@@ -115,10 +114,11 @@ The following instructions would typically be done by a **system admin** before 
         -validity 730
     ```
 
-1. Create the client PKCS12 key store. We will assume a single authorized client certificate for our example
-   purposes.  So first, let's create the client key and certificate for the
-   client to use.  **NOTE:** you will be prompted to provide the 7 fields for
-   the Distinguished Name ("DN") for the certificate being generated.
+1. Create the *client* PKCS12 key store.
+   A single authorized client certificate is assumed for example purposes.
+   Create the client key and certificate for the client to use.
+
+   **NOTE:** Answer prompts for the 7 fields for the Distinguished Name ("DN") for the certificate being generated.
    Example:
 
     ```console
@@ -133,7 +133,7 @@ The following instructions would typically be done by a **system admin** before 
         -validity 730 \
     ```
 
-1. Export the client certificate and create a trust store containing it.
+1. Export the client certificate.
    Example:
 
     ```console
@@ -172,7 +172,7 @@ The following instructions would typically be done by a **system admin** before 
       >> ${KEYTOOL_SERVER_STORE_FILE_BASE64}
     ```
 
-1. Insert base64 string into the cloudformation stack
+1. Insert base64 string into the cloudformation stack.
 
 ![cloudformation stack](assets/cft_input.png)
 
@@ -184,36 +184,39 @@ The following instructions would typically be done by a **system admin** before 
 
 1. To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
 
-```console
-curl -k https://<senzing-api-server-url>/heartbeat \
-    --cert my-client-store.p12:change-it \
-    --cert-type P12
-```
+    ```console
+    curl -k https://<senzing-api-server-url>/heartbeat \
+        --cert ${KEYTOOL_CLIENT_STORE_FILE}:${KEYTOOL_CLIENT_PASSWORD} \
+        --cert-type P12
+    ```
 
 To get a more in-depth look on how a sample python application can authenticate with the senzing's api server, refer to [here](examples/demo.py).
 
 1. To run the sample python application, first export the following variables.
+   Example:
 
-```console
-export CLIENT_STORE_PATH=<insert-client-store-file-path> \
-export CLIENT_STORE_PASSWORD=<insert-client-store-password> \
-export API_HEARTBEAT_URL=<senzing-api-server-url>
-```
+    ```console
+    export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE} \
+    export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD} \
+    export API_HEARTBEAT_URL=<senzing-api-server-url>
+    ```
 
 1. Use the following commands to run the sample application.
+   Example:
 
-```console
-cd examples
-pip install -r requirements.txt
-export FLASK_APP=demo
-flask run
-```
+    ```console
+    cd examples
+    pip install -r requirements.txt
+    export FLASK_APP=demo
+    flask run
+    ```
 
 1. To get the sample python application to interact the Senzing's api server, simply send the following curl command.
+   Example:
 
-```console
-curl http://127.0.0.1:5000/
-```
+    ```console
+    curl http://127.0.0.1:5000/
+    ```
 
 ## References
 
