@@ -17,8 +17,8 @@ Using this stack, a developer could view the api documentation via swagger and a
 ## Contents
 
 1. [Pre-requisites](#pre-requisites)
-1. [Deploy](#deploy)
 1. [Generate keystores for SSL client authentication](#generate-keystores-for-ssl-client-authentication)
+1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
 1. [Example application](#example-application)
 1. [References](#references)
