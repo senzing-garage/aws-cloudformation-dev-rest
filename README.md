@@ -58,7 +58,7 @@ Using this stack, a developer could view the api documentation via swagger and a
             1. Enter the server keystore alias
                 1. Example: Contents of `KEYTOOL_SERVER_ALIAS` created below.
             1. Enter a base64 representation of the *client* keystore
-                1. Example: Contents of `KEYTOOL_CLIENT_STORE_FILE_BASE64` created below.
+                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` created below.
             1. Enter the client keystore password
                 1. Example: Contents of `KEYTOOL_CLIENT_PASSWORD` created below.
         1. In **Security responsibility**
