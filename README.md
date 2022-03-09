@@ -58,6 +58,8 @@ Using this stack, a developer could view the api documentation via swagger and a
            If not, see
            [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client authentication).
 
+           [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
+
             1. Enter your email address.
                 1. Example: `me@example.com`
             1. Enter the permitted IP address block
