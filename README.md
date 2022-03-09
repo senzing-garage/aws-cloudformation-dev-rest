@@ -126,7 +126,7 @@ The following instructions would typically be done by a **system admin** before 
         -alias ${KEYTOOL_CLIENT_ALIAS} \
         -genkey \
         -keyalg RSA \
-        -keysize 2048
+        -keysize 2048 \
         -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
         -storepass ${KEYTOOL_CLIENT_PASSWORD} \
         -storetype PKCS12 \
