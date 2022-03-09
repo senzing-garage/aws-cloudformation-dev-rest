@@ -190,20 +190,6 @@ before bringing up this cloudformation template.
 
 ## How to interact using SSL client authentication?
 
-1. Clone repository
-   First, set these environment variable values:
-
-    ```console
-    export GIT_ACCOUNT=senzing
-    export GIT_REPOSITORY=aws-cloudformation-dev-rest
-    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
-    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
-    ```
-
-   then using the environment variables values just set,
-   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
-   to install the Git repository.
-
 1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
    **Note:** No trailing slash.
@@ -236,6 +222,20 @@ An example python application that authenticates with the senzing's api server
 is seen at [demo.py](examples/demo.py).
 
 To run the example python application:
+
+1. Clone repository
+   First, set these environment variable values:
+
+    ```console
+    export GIT_ACCOUNT=senzing
+    export GIT_REPOSITORY=aws-cloudformation-dev-rest
+    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
+    ```
+
+   then using the environment variables values just set,
+   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
+   to install the Git repository.
 
 1. Export the following variables.
    Example:
