@@ -84,6 +84,7 @@ The following instructions would typically be done by a **system admin** before 
     export KEYTOOL_CLIENT_CERTIFICATE_FILE=~/my-senzing-client.cer
     export KEYTOOL_CLIENT_PASSWORD=BadClientPassword
     export KEYTOOL_CLIENT_STORE_FILE=~/my-senzing-client-store.p12
+    export KEYTOOL_CLIENT_TRUST_STORE_FILE=~/my-senzing-client-trust-store.p12
     export KEYTOOL_SERVER_ALIAS=my-senzing-server
     export KEYTOOL_SERVER_PASSWORD=BadServerPassword
     export KEYTOOL_SERVER_STORE_FILE=~/my-senzing-server-store.p12
@@ -93,7 +94,7 @@ The following instructions would typically be done by a **system admin** before 
    Example:
 
     ```console
-    export KEYTOOL_CLIENT_STORE_FILE_BASE64=${KEYTOOL_CLIENT_STORE_FILE}.base64
+    export KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64=${KEYTOOL_CLIENT_TRUST_STORE_FILE}.base64
     export KEYTOOL_SERVER_STORE_FILE_BASE64=${KEYTOOL_SERVER_STORE_FILE}.base64
     ```
 
@@ -154,7 +155,7 @@ The following instructions would typically be done by a **system admin** before 
         -alias ${KEYTOOL_CLIENT_ALIAS} \
         -file ${KEYTOOL_CLIENT_CERTIFICATE_FILE} \
         -import \
-        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
+        -keystore ${KEYTOOL_CLIENT_TRUST_STORE_FILE} \
         -storepass ${KEYTOOL_CLIENT_PASSWORD} \
         -storetype PKCS12
     ```
@@ -164,8 +165,8 @@ The following instructions would typically be done by a **system admin** before 
 
     ```console
     base64 \
-      ${KEYTOOL_CLIENT_STORE_FILE} \
-      >> ${KEYTOOL_CLIENT_STORE_FILE_BASE64}
+      ${KEYTOOL_CLIENT_TRUST_STORE_FILE} \
+      >> ${KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64}
 
     base64 \
       ${KEYTOOL_SERVER_STORE_FILE} \
