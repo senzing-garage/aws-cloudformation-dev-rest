@@ -252,6 +252,11 @@ To run the example python application:
     curl http://127.0.0.1:5000/
     ```
 
+   Or in a browser visit:
+
+   - [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+   - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
+
 ## References
 
 To understand mutual TLS authentication better, refer to the resources here:
