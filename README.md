@@ -130,7 +130,7 @@ The following instructions would typically be done by a **system admin** before 
         -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
         -storepass ${KEYTOOL_CLIENT_PASSWORD} \
         -storetype PKCS12 \
-        -validity 730 \
+        -validity 730
     ```
 
 1. Export the client certificate.
