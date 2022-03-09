@@ -190,7 +190,7 @@ before bringing up this cloudformation template.
 
 ## How to interact using SSL client authentication?
 
-1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up.
+1. :pencil2: Retrieve the Senzing API Server url from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
    This is what it looks like in the AWS Cloudformation management console:
 
@@ -219,7 +219,7 @@ before bringing up this cloudformation template.
 
 ## Example application
 
-An example python application that authenticates with the senzing's api server
+An example python application that authenticates with the Senzing's API Server
 is seen at [demo.py](examples/demo.py).
 
 To run the example python application:
