@@ -192,15 +192,15 @@ The following instructions would typically be done by a **system admin** before 
    follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
    to install the Git repository.
 
-1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
-
-![api url](assets/cloudformation_output_api.png)
-
+1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up.
+   It can be found in the output tab, under the key "UrlApiServer".
    Example:
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api/
     ```
+
+   ![api url](assets/cloudformation_output_api.png)
 
 1. To interact directly with the Senzing API server,
    you can make a curl call with the `--cert` and `--cert-type` options
