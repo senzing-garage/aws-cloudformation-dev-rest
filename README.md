@@ -17,9 +17,9 @@ Using this stack, a developer could view the api documentation via swagger and a
 ## Contents
 
 1. [Pre-requisites](#pre-requisites)
-1. [How to Deploy](#how-to-deploy)
-1. [How to generate keystores for SSL client authentication](#how-to-generate-keystores-for-ssl-client-authentication)
-1. [How to interact using SSL client authentication](#how-to-interact-using-ssl-client-authentication)
+1. [Deploy](#deploy)
+1. [Generate keystores for SSL client authentication](#generate-keystores-for-ssl-client-authentication)
+1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
 1. [Example application](#example-application)
 1. [References](#references)
 
@@ -32,7 +32,7 @@ Using this stack, a developer could view the api documentation via swagger and a
     1. FIXME:  If the `keytool` is already installed...
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
-## How to Deploy
+## Deploy
 
 1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
    With appropriate permissions, the
@@ -82,7 +82,7 @@ Using this stack, a developer could view the api documentation via swagger and a
         1. Check ":ballot_box_with_check: I acknowledge that AWS CloudFormation might create IAM resources."
     1. At lower-right, click "Create stack" button.
 
-## How to generate keystores for SSL client authentication
+## Generate keystores for SSL client authentication
 
 The following example instructions would typically be done by a **system admin**
 before bringing up this cloudformation template.
@@ -188,7 +188,7 @@ before bringing up this cloudformation template.
 
 ![cloudformation stack](assets/cft_input.png)
 
-## How to interact using SSL client authentication?
+## Interact with Senzing API Server using SSL client authentication
 
 1. :pencil2: Retrieve the Senzing API Server url from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
