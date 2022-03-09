@@ -178,16 +178,41 @@ The following instructions would typically be done by a **system admin** before 
 
 ## How to interact using SSL client authentication?
 
-1. Retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
+1. Clone repository
+   First, set these environment variable values:
+
+    ```console
+    export GIT_ACCOUNT=senzing
+    export GIT_REPOSITORY=aws-cloudformation-dev-rest
+    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
+    ```
+
+   then using the environment variables values just set,
+   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
+   to install the Git repository.
+
+1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up. It can be found in the output tab, under the key "UrlApiServer".
 
 ![api url](assets/cloudformation_output_api.png)
 
-1. To interact directly with the Senzing API server, you can make a curl call with the --cert and --cert-type options to get curl to authenticate itself to the API server.
+   Example:
 
     ```console
-    curl -k https://<senzing-api-server-url>/heartbeat \
+    export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api/
+    ```
+
+1. To interact directly with the Senzing API server,
+   you can make a curl call with the `--cert` and `--cert-type` options
+   to get curl to authenticate itself to the API server.
+   Example:;
+
+    ```console
+    curl \
         --cert ${KEYTOOL_CLIENT_STORE_FILE}:${KEYTOOL_CLIENT_PASSWORD} \
-        --cert-type P12
+        --cert-type P12 \
+        --insecure \
+        ${SENZING_API_SERVER_URL}/heartbeat
     ```
 
 To get a more in-depth look on how a sample python application can authenticate with the senzing's api server, refer to [here](examples/demo.py).
@@ -198,14 +223,14 @@ To get a more in-depth look on how a sample python application can authenticate 
     ```console
     export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE}
     export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD}
-    export API_HEARTBEAT_URL=<senzing-api-server-url>
+    export API_HEARTBEAT_URL=${SENZING_API_SERVER_URL}
     ```
 
 1. Use the following commands to run the sample application.
    Example:
 
     ```console
-    cd examples
+    cd ${GIT_REPOSITORY_DIR}/examples
     pip install -r requirements.txt
     export FLASK_APP=demo
     flask run
