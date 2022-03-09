@@ -195,10 +195,11 @@ The following instructions would typically be done by a **system admin** before 
 
 1. :pencil2: Retrieve the senzing api server url from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
+   **Note:** No trailing slash.
    Example:
 
     ```console
-    export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api/
+    export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
    This is what it looks like in the AWS Cloudformation management console:
