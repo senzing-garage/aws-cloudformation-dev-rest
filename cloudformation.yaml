@@ -62,11 +62,11 @@ Metadata:
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
       SenzingApiServerClientKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the client keystore with the relevant certificates loaded in'
+        default: 'To enable mtls authentication in the api server, please input base-64 encoded client keystore string'
       SenzingApiServerClientKeyStorePassword:
         default: 'If enabling mtls authentication, provide client keystore password'
       SenzingApiServerKeyStore:
-        default: 'To enable mtls authentication in the api server, provide the server keystore with the relevant certificates loaded in'
+        default: 'To enable mtls authentication in the api server, please input base-64 encoded server keystore string'
       SenzingApiServerKeyStorePassword:
         default: 'If enabling mtls authentication, provide server keystore password'
       SenzingApiServerKeyStoreAlias:
@@ -74,7 +74,7 @@ Metadata:
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
-          If using more than 100k records, please input base 64 encoded license string.
+          If using more than 100k records, please input base-64 encoded license string.
       SenzingVersion:
         default: "Required: Version of Senzing to install."
 
@@ -127,33 +127,33 @@ Parameters:
     Default: " "
     Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
     Type: String
-  
+
   SenzingApiServerKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystore'
     Type: String
-
 
   SenzingApiServerKeyStorePassword:
     Default: '_'
     Description: 'Senzing API Server Key Store Password'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorepassword'
     Type: String
-  
+
   SenzingApiServerKeyStoreAlias:
     Default: '_'
-    Description: 'Senzing API Server Client Key Store Alias'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorealias'
     Type: String
-  
+
   SenzingApiServerClientKeyStore:
     ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystore'
     Type: String
-  
+
   SenzingApiServerClientKeyStorePassword:
     Default: '_'
-    Description: 'Senzing API Server Client Key Store Password'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystorepassword'
     Type: String
 
   SenzingVersion:
@@ -1933,7 +1933,7 @@ Resources:
             - StackNameAsLower: !GetAtt LambdaRunnerStackNameAsLower.OutputString
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-  
+
   NetworkLoadBalancerPublic:
     Condition: IfUsingApiServer
     Properties:
@@ -2021,7 +2021,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
     Type: AWS::ElasticLoadBalancingV2::Listener
-  
+
   TcpListenerPort443:
     Condition: IfUsingApiServer
     Properties:
@@ -2035,7 +2035,7 @@ Resources:
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
 # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#LoadBalancers: > {name} > "Listeners" tab > "View/edit rules"
-  
+
   ListenerRuleSwagger:
     Condition: IfRunSwagger
     Properties:
