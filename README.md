@@ -26,10 +26,7 @@ Using this stack, a developer could view the api documentation via swagger and a
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. FIXME: Install `keytool`
-    1. FIXME: Make it clear what needs to be installed and why a certain version is needed.
-    1. FIXME: Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html)
-    1. FIXME:  If the `keytool` is already installed...
+1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html) (it must be this specific java version)
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
 ## Generate keystores for SSL client authentication
@@ -278,6 +275,8 @@ To run the example python application:
 
    - [http://127.0.0.1:5000](http://127.0.0.1:5000)
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
+
+1. For more APIs, please refer to the stacks swagger documentation.
 
 ## References
 

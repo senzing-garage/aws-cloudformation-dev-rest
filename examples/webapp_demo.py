@@ -5,6 +5,7 @@ import json
 
 app = Flask(__name__)
 
+# For more APIs, please refer to the stacks swagger documentation.
 
 @app.route("/")
 def senzing_example_1():

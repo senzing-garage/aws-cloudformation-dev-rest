@@ -136,7 +136,6 @@ Parameters:
 
   SenzingApiServerKeyStorePassword:
     Default: '_'
-    Description: 'Senzing API Server Key Store Password'
     Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorepassword'
     Type: String
 
@@ -1960,6 +1959,9 @@ Resources:
     DependsOn:
      - NetworkLoadBalancerPublic
     Properties:
+      HealthCheckIntervalSeconds: 80
+      HealthCheckTimeoutSeconds: 50
+      HealthyThresholdCount: 2
       Name: !Sub "${AWS::StackName}-tg-api-public"
       Port: 2443
       Protocol: TCP
@@ -1967,6 +1969,7 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-target-group-api-server-public"
       TargetType: ip
+      UnhealthyThresholdCount: 5
       VpcId:
         Fn::ImportValue:
           Fn::Sub: "${DatabaseStack}-ec2-VpcId"
