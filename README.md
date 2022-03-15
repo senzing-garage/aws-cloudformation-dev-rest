@@ -117,7 +117,9 @@ To create SSL credentials:
     ```
 
 1. Create a trust store containing certificate (`KEYTOOL_CLIENT_TRUST_STORE_FILE`).
-   Example:
+<br/>Note: You will be prompted with "Trust this certificate?", answer with:  "yes"
+<br/>
+<br/>Example:
 
     ```console
     keytool \
@@ -200,18 +202,17 @@ To create SSL credentials:
 
    ![api url](assets/cloudformation_output_api.png)
 
-   Example:
+<br/>Example:
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-   :warning: **Warning:** No trailing slash.
-
 1. To interact directly with the Senzing API server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the API server.
-   Example:
+   <br/> 
+   <br/>Example:
 
     ```console
     curl \
@@ -221,12 +222,11 @@ To create SSL credentials:
         --cert-type P12
     ```
 
-## Example application
+## Example applications
 
-An example python application that authenticates with the Senzing's API Server
-is seen at [demo.py](examples/demo.py).
+Two example applications were created to illustrate how an application can authenticate with the Senzing's API Server. The cli application can be found [here](examples/cli_demo.py) and the web application can be found [here](examples/webapp_demo.py)
 
-To run the example python application:
+To run the example python applications:
 
 1. Clone repository.
    First, set these environment variable values:
@@ -243,27 +243,31 @@ To run the example python application:
    to install the Git repository.
 
 1. Export the following variables.
-   Example:
+   <br/> 
+<br/>Example:
 
     ```console
     export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE}
     export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD}
-    export API_HEARTBEAT_URL=${SENZING_API_SERVER_URL}
+    export API_URL=${SENZING_API_SERVER_URL}
     ```
 
-1. Use the following commands to run the example application.
-   Example:
+1. Use the following commands to run the example web application. 
+<br/>Note: Homebrew users may see deprecation warnings like "DEPRECATION: Configuring installation scheme with distutils ...". Do not worry and continue on. To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621)
+<br/> 
+<br/>Example:
 
     ```console
     cd ${GIT_REPOSITORY_DIR}/examples
     pip install -r requirements.txt
-    export FLASK_APP=demo
+    export FLASK_APP=webapp_demo
     flask run
     ```
 
-1. To get the example python application to interact the Senzing's api server,
+1. To get the example web application to interact the Senzing's api server,
    simply send the following `curl` commands.
-   Example:
+   <br/> 
+<br/>Example:
 
     ```console
     curl http://127.0.0.1:5000
@@ -276,7 +280,12 @@ To run the example python application:
    - [http://127.0.0.1:5000](http://127.0.0.1:5000)
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
 
-1. For more APIs, please refer to the stacks swagger documentation.
+1. Use the following command to run the example cli application.
+```console
+python examples/cli_demo.py
+```
+
+1. For more APIs, please refer to the stack's swagger documentation.
 
 ## References
 

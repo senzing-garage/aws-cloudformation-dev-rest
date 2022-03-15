@@ -37,8 +37,8 @@ Metadata:
           - SenzingApiServerKeyStore
           - SenzingApiServerKeyStorePassword
           - SenzingApiServerKeyStoreAlias
-          - SenzingApiServerClientKeyStore
-          - SenzingApiServerClientKeyStorePassword
+          - SenzingApiServerClientTrustStore
+          - SenzingApiServerClientTrustStorePassword
       - Label:
           default: Security responsibility
         Parameters:
@@ -61,16 +61,16 @@ Metadata:
           Before using authentic PII, ensure the security of your deployment.
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
-      SenzingApiServerClientKeyStore:
-        default: 'To enable mtls authentication in the api server, please input base-64 encoded client keystore string'
-      SenzingApiServerClientKeyStorePassword:
-        default: 'If enabling mtls authentication, provide client keystore password'
+      SenzingApiServerClientTrustStore:
+        default: 'To enable ssl client authentication in the api server, please input base-64 encoded client keystore string'
+      SenzingApiServerClientTrustStorePassword:
+        default: 'If enabling ssl client authentication, provide client keystore password'
       SenzingApiServerKeyStore:
-        default: 'To enable mtls authentication in the api server, please input base-64 encoded server keystore string'
+        default: 'To enable ssl client authentication in the api server, please input base-64 encoded server keystore string'
       SenzingApiServerKeyStorePassword:
-        default: 'If enabling mtls authentication, provide server keystore password'
+        default: 'If enabling ssl client authentication, provide server keystore password'
       SenzingApiServerKeyStoreAlias:
-        default: 'If enabling mtls authentication, provide server keystore alias'
+        default: 'If enabling ssl client authentication, provide server keystore alias'
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
@@ -91,7 +91,7 @@ Parameters:
     AllowedPattern: ".+|^I_ACCEPT_THE_SENZING_EULA$"
     ConstraintDescription: AcceptEula parameter must be 'I_ACCEPT_THE_SENZING_EULA'
     Default: "_"
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#accepteula"
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#accepteula"
     Type: String
 
   CidrInbound:
@@ -100,59 +100,59 @@ Parameters:
     MinLength: 9
     MaxLength: 18
     Default: "10.0.0.0/32"
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#cidrinbound"
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#cidrinbound"
     Type: String
 
   CognitoAdminEmail:
     AllowedPattern: '.+|^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'
     ConstraintDescription: Entering initial user email address is required to proceed
     Default: "_"
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#cognitoadminemail"
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#cognitoadminemail"
     Type: String
 
   DatabaseStack:
     Default: "_"
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#databasestack"
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#databasestack"
     Type: String
 
   SecurityResponsibility:
     AllowedPattern: ".+|^I AGREE$"
     ConstraintDescription: SecurityResponsibility parameter must be 'I AGREE'
     Default: "_"
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#securityresponsibility"
-    Type: String
-
-  SenzingLicenseAsBase64:
-    ConstraintDescription: "Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
-    Default: " "
-    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64"
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#securityresponsibility"
     Type: String
 
   SenzingApiServerKeyStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystore'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystore'
     Type: String
 
   SenzingApiServerKeyStorePassword:
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorepassword'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorepassword'
     Type: String
 
   SenzingApiServerKeyStoreAlias:
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverkeystorealias'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorealias'
     Type: String
 
-  SenzingApiServerClientKeyStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/#senzinglicenseasbase64'
+  SenzingApiServerClientTrustStore:
+    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystore'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStore'
     Type: String
 
-  SenzingApiServerClientKeyStorePassword:
+  SenzingApiServerClientTrustStorePassword:
     Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#senzingapiserverclientkeystorepassword'
+    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStorepassword'
+    Type: String
+
+  SenzingLicenseAsBase64:
+    ConstraintDescription: "Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64"
+    Default: " "
+    Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64"
     Type: String
 
   SenzingVersion:
@@ -1959,8 +1959,7 @@ Resources:
     DependsOn:
      - NetworkLoadBalancerPublic
     Properties:
-      HealthCheckIntervalSeconds: 80
-      HealthCheckTimeoutSeconds: 50
+      HealthCheckIntervalSeconds: 30
       HealthyThresholdCount: 2
       Name: !Sub "${AWS::StackName}-tg-api-public"
       Port: 2443
@@ -1969,7 +1968,7 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-target-group-api-server-public"
       TargetType: ip
-      UnhealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
       VpcId:
         Fn::ImportValue:
           Fn::Sub: "${DatabaseStack}-ec2-VpcId"
@@ -2093,27 +2092,15 @@ Resources:
                   <ol>
                     <br />
                     <li style="${SwaggerUI}">
-                        <b>Senzing API Server: </b> <a href="https://${Host}/api/heartbeat">https://${Host}/api/heartbeat</a>
+                        <b>Senzing API Server: </b> <a href="https://${APIHost}/api/heartbeat">https://${APIHost}/api/heartbeat</a>
                       <br />
                         (For more details see the <a href="https://github.com/Senzing/senzing-api-server">GitHub repository</a>)
                     </li>
                     <br />
                     <li style="${SwaggerUI}">
-                        <b>Senzing HTTP REST API: </b> <a href="https://${Host}/swagger">https://${Host}/swagger</a>
+                        <b>Senzing Swagger: </b> <a href="https://${SwaggerHost}/swagger">https://${SwaggerHost}/swagger</a>
                         <br />
-                        (For more details see the <a href="https://github.com/Senzing/senzing-rest-api-specification">GitHub repository</a>)
-                          <ul>
-                              <li><b>Servers:</b> <code>{protocol}://{host}:{port}{path}</code></li>
-                              <li><b>Server variables</b>:
-                                  <ol>
-                                      <li><b>protocol:</b> https</li>
-                                      <li><b>host:</b> ${Host}</li>
-                                      <li><b>port:</b> 443</li>
-                                      <li><b>path:</b> /api</li>
-                                  </ol>
-                              </li>
-                          </ul>
-                      </li>
+                    </li>
                   </ol>
               </p>
               <p>
@@ -2125,7 +2112,8 @@ Resources:
               </p>
               </html>
             - Contact: !Ref CognitoAdminEmail
-              Host: !GetAtt LoadBalancerPublic.DNSName
+              APIHost: !GetAtt NetworkLoadBalancerPublic.DNSName
+              SwaggerHost: !GetAtt LoadBalancerPublic.DNSName
               SwaggerUI: !If [IfRunSwagger, "", "display: none"]
           EmailSubject: !Sub "Information for AWS Cloudformation ${AWS::StackName} stack"
           SMSMessage: "Use the username {username} and the temporary password {####} to log in for the first time."
@@ -2232,7 +2220,7 @@ Resources:
               Value: '/etc/opt/senzing/api-server-client-keystore.p12'
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
-              Value: !Sub '${SenzingApiServerClientKeyStorePassword}'
+              Value: !Sub '${SenzingApiServerClientTrustStorePassword}'
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
@@ -2372,7 +2360,7 @@ Resources:
               Value: !Sub "${SenzingApiServerKeyStore}"
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE_BASE64_ENCODED
-              Value: !Sub "${SenzingApiServerClientKeyStore}"
+              Value: !Sub "${SenzingApiServerClientTrustStore}"
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
@@ -2844,93 +2832,93 @@ Outputs:
   # AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Outputs
 
   AccountID:
-    Description: "The accountID Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#accountid"
+    Description: "The accountID Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#accountid"
     Export:
       Name: !Sub "${AWS::StackName}-account-id"
     Value: !Sub "${AWS::AccountId}"
 
   CertificateArn:
     Condition: IfUsingWeb
-    Description: "ARN of the SSL certificate. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#certificatearn"
+    Description: "ARN of the SSL certificate. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#certificatearn"
     Export:
       Name: !Sub "${AWS::StackName}-certificate-arn"
     Value: !GetAtt IamServerCertificate.Arn
 
   Host:
     Condition: IfUsingWeb
-    Description: "Host name of public services. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#host"
+    Description: "Host name of public services. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#host"
     Export:
       Name: !Sub "${AWS::StackName}-host"
     Value: !GetAtt LoadBalancerPublic.DNSName
 
   QueueOutput:
-    Description: "URL of the queue with info records. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#queueoutput"
+    Description: "URL of the queue with info records. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#queueoutput"
     Export:
       Name: !Sub "${AWS::StackName}-sqs-output"
     Value: !Ref SqsOutput
 
   SshPassword:
     Condition: IfUsingSshd
-    Description: "The randomly generated password for SSH access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#sshpassword"
+    Description: "The randomly generated password for SSH access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#sshpassword"
     Export:
       Name: !Sub "${AWS::StackName}-ssh-password"
     Value: !GetAtt LambdaRunnerSshPassword.RandomString
 
   SshUsername:
     Condition: IfUsingSshd
-    Description: "The username for SSH access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#sshusername"
+    Description: "The username for SSH access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#sshusername"
     Export:
       Name: !Sub "${AWS::StackName}-ssh-username"
     Value: root
 
   SubnetPublic1:
-    Description: "The ID of public subnet 1. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#subnetpublic1"
+    Description: "The ID of public subnet 1. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#subnetpublic1"
     Export:
       Name: !Sub "${AWS::StackName}-subnet-public-1"
     Value: !Ref Ec2SubnetPublic1
 
   SubnetPublic2:
-    Description: "The ID of public subnet 2. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#subnetpublic2"
+    Description: "The ID of public subnet 2. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#subnetpublic2"
     Export:
       Name: !Sub "${AWS::StackName}-subnet-public-2"
     Value: !Ref Ec2SubnetPublic2
 
   UrlApiServer:
     Condition: IfUsingApiServer
-    Description: "URL for API Server. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserver"
+    Description: "URL for API Server. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#urlapiserver"
     Export:
       Name: !Sub "${AWS::StackName}-url-api-server"
-    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api"
 
   UrlApiServerHeartbeat:
     Condition: IfUsingApiServer
-    Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlapiserverheartbeat"
-    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat/"
+    Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#urlapiserverheartbeat"
+    Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat"
 
   UrlSwagger:
     Condition: IfRunSwagger
-    Description: "URL for Swagger. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#urlswagger"
+    Description: "URL for Swagger. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#urlswagger"
     Export:
       Name: !Sub "${AWS::StackName}-url-swagger"
-    Value: !Sub "https://${LoadBalancerPublic.DNSName}/swagger/"
+    Value: !Sub "https://${LoadBalancerPublic.DNSName}/swagger"
 
   UserInitPassword:
     Condition: IfUsingWeb
-    Description: "One time password for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#userinitpassword"
+    Description: "One time password for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#userinitpassword"
     Export:
       Name: !Sub "${AWS::StackName}-user-init-password"
     Value: !GetAtt LambdaRunnerWebPassword.RandomPassword
 
   UserName:
     Condition: IfUsingWeb
-    Description: "Username for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#username"
+    Description: "Username for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#username"
     Export:
       Name: !Sub "${AWS::StackName}-user-name"
     Value: !Ref CognitoAdminEmail
 
   UserPool:
     Condition: IfUsingWeb
-    Description: "Username for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/#userpool"
+    Description: "Username for web access. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#userpool"
     Export:
       Name: !Sub "${AWS::StackName}-user-pool"
     Value: !Sub "https://console.aws.amazon.com/cognito/users/#/pool/${UserPool}/users"
