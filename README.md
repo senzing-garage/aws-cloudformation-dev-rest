@@ -10,7 +10,7 @@ in a secure manner.
 
 The following diagram illustrates a Senzing stack that would be brought up by the AWS CloudFormation template.
 
-Using this stack, a developer could view the api documentation via swagger and access Senzing's api server to interact with Senzing.
+Using this stack, a developer could interact with Senzing's api server programmatically.
 
 ![overview diagram](assets/overview_diagram.png)
 
