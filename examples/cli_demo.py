@@ -4,7 +4,8 @@ from requests_pkcs12 import get, post
 import os
 import json
 
-# For more APIs, please refer to the stack's swagger documentation.
+# For more APIs, please refer to this swagger documentation
+# https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml
 
 client_store_path = os.getenv('CLIENT_STORE_PATH')
 client_store_password = os.getenv('CLIENT_STORE_PASSWORD')

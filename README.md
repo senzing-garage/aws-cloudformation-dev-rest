@@ -281,11 +281,13 @@ To run the example python applications:
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
 
 1. Use the following command to run the example cli application.
-```console
-python examples/cli_demo.py
-```
 
-1. For more APIs, please refer to the stack's swagger documentation.
+    ```
+    python examples/cli_demo.py
+    ```
+
+1. For more APIs, please refer to this [swagger documentation](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml).
+
 
 ## References
 

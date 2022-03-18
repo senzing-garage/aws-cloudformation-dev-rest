@@ -5,7 +5,8 @@ import json
 
 app = Flask(__name__)
 
-# For more APIs, please refer to the stack's swagger documentation.
+# For more APIs, please refer to this swagger documentation
+# https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml
 
 @app.route("/")
 def senzing_example_1():
