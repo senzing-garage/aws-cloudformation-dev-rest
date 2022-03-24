@@ -924,6 +924,52 @@ Resources:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
   # AWS Console: https://console.aws.amazon.com/lambda/home?#/functions > Search for {stack}
 
+  LambdaFunctionRandomPassword:
+    Properties:
+      Code:
+        ZipFile: |
+          #!/usr/bin/env python3
+          import cfnresponse
+          import json
+          import logging
+          import random
+          import string
+          import traceback
+          logger = logging.getLogger()
+          logger.setLevel(logging.INFO)
+          def handler(event, context):
+              result = cfnresponse.SUCCESS
+              response_data = {}
+              try:
+                  logger.info("Event: {0}".format(json.dumps(event)))
+                  if event['RequestType'] in ['Create', 'Update']:
+                      properties = event.get('ResourceProperties', {})
+                      length = int(properties.get('Length', 0))
+                      char_list = []
+                      char_list.extend(random.choices(string.ascii_lowercase, k=1))
+                      char_list.extend(random.choices(string.ascii_uppercase, k=1))
+                      char_list.extend(random.choices(string.digits, k=1))
+                      char_list.extend(random.choices(string.punctuation, k=1))
+                      char_list.extend(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length-4))
+                      random.shuffle(char_list)
+                      response_data["RandomPassword"] = ''.join(char_list)
+              except Exception as e:
+                  logger.error(e)
+                  traceback.print_exc()
+                  result = cfnresponse.FAILED
+              finally:
+                  cfnresponse.send(event, context, result, response_data)
+      Description: Generate string of random characters for a password.
+      FunctionName: !Sub "${AWS::StackName}-lambda-random-password"
+      Handler: index.handler
+      Role: !GetAtt IamRoleLambda.Arn
+      Runtime: python3.8
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-random-password"
+      Timeout: 600
+    Type: AWS::Lambda::Function
+
   LambdaFunctionRunTask:
     DependsOn:
       - Ec2SubnetRouteTableAssociationPrivate1
@@ -1450,6 +1496,53 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-lambda-runner-wait-for-efs"
     Type: Custom::LambdaRunnerWaitForEfs
+  
+  LambdaRunnerServerKeystorePassword:
+    Properties:
+      ClusterId: !Ref EcsCluster
+      Length: 16
+      ServiceToken: !GetAtt LambdaFunctionRandomPassword.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-server-keystore-password"
+    Type: Custom::LambdaRunnerServerKeystorePassword
+  
+  LambdaRunnerClientKeystorePassword:
+    Properties:
+      ClusterId: !Ref EcsCluster
+      Length: 16
+      ServiceToken: !GetAtt LambdaFunctionRandomPassword.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-client-keystore-password"
+    Type: Custom::LambdaRunnerClientKeystorePassword
+
+  # -- Secrets Manager ----------------------------------------------------------
+  
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-secretsmanager-secret.html
+  # AWS Console: https://console.aws.amazon.com/secretsmanager/home
+
+  SecretServerKeystorePassword:
+    Properties:
+      Description: Senzing API Server Keystore password
+      Name: ServerKeystorePassword
+      SecretString: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+      Tags:
+        -
+          Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-secret-server-keystore-password"
+    Type: 'AWS::SecretsManager::Secret'
+  
+  SecretClientKeystorePassword:
+    Properties:
+      Description: Senzing API Client Keystore password
+      Name: ClientKeystorePassword
+      SecretString: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
+      Tags:
+        -
+          Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-secret-client-keystore-password"
+    Type: 'AWS::SecretsManager::Secret'
 
   # -- Load balancing -----------------------------------------------------------
 
@@ -1553,20 +1646,11 @@ Resources:
             - Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
             -
-              Name: SENZING_API_SERVER_KEY_STORE
-              Value: '/etc/opt/senzing/api-server-keystore.p12'
-            -
               Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
-              Value: !Sub '${SenzingApiServerKeyStorePassword}'
-            -
-              Name: SENZING_API_SERVER_KEY_ALIAS
-              Value: !Sub '${SenzingApiServerKeyStoreAlias}'
-            -
-              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
-              Value: '/etc/opt/senzing/api-server-client-keystore.p12'
+              Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
-              Value: !Sub '${SenzingApiServerClientTrustStorePassword}'
+              Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
