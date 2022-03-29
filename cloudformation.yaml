@@ -33,11 +33,6 @@ Metadata:
           default: Security
         Parameters:
           - CidrInbound
-          - SenzingApiServerKeyStore
-          - SenzingApiServerKeyStorePassword
-          - SenzingApiServerKeyStoreAlias
-          - SenzingApiServerClientTrustStore
-          - SenzingApiServerClientTrustStorePassword
       - Label:
           default: Security responsibility
         Parameters:
@@ -58,16 +53,6 @@ Metadata:
           Before using authentic PII, ensure the security of your deployment.
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
-      SenzingApiServerClientTrustStore:
-        default: 'To enable ssl client authentication in the api server, please input base-64 encoded client keystore string'
-      SenzingApiServerClientTrustStorePassword:
-        default: 'If enabling ssl client authentication, provide client keystore password'
-      SenzingApiServerKeyStore:
-        default: 'To enable ssl client authentication in the api server, please input base-64 encoded server keystore string'
-      SenzingApiServerKeyStorePassword:
-        default: 'If enabling ssl client authentication, provide server keystore password'
-      SenzingApiServerKeyStoreAlias:
-        default: 'If enabling ssl client authentication, provide server keystore alias'
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
@@ -110,33 +95,6 @@ Parameters:
     ConstraintDescription: SecurityResponsibility parameter must be 'I AGREE'
     Default: "_"
     Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#securityresponsibility"
-    Type: String
-
-  SenzingApiServerKeyStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystore'
-    Type: String
-
-  SenzingApiServerKeyStorePassword:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorepassword'
-    Type: String
-
-  SenzingApiServerKeyStoreAlias:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorealias'
-    Type: String
-
-  SenzingApiServerClientTrustStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStore'
-    Type: String
-
-  SenzingApiServerClientTrustStorePassword:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStorepassword'
     Type: String
 
   SenzingLicenseAsBase64:
@@ -522,6 +480,21 @@ Resources:
         - !Ref IamRoleLambda
         - !Ref IamRoleInstallSenzing
         - !Ref IamRoleInitPostgres
+        - !Ref IamRoleInitSenzing
+    Type: AWS::IAM::Policy
+  
+  IamPolicySecretManager:
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-iam-policy-secret-manager"
+      PolicyDocument:
+        Statement:
+          - Action:
+              - secretsmanager:CreateSecret
+            Effect: Allow
+            Resource:
+              - "*"
+        Version: "2012-10-17"
+      Roles:
         - !Ref IamRoleInitSenzing
     Type: AWS::IAM::Policy
   
@@ -1646,8 +1619,14 @@ Resources:
             - Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
             -
+              Name: SENZING_API_SERVER_KEY_STORE
+              Value: '/etc/opt/senzing/api-server-keystore.p12'
+            -
               Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
               Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
+              Value: '/etc/opt/senzing/my-client-trust-store.p12'
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
               Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
@@ -1785,12 +1764,8 @@ Resources:
                 save
             - Name: SENZING_LICENSE_BASE64_ENCODED
               Value: !Sub "${SenzingLicenseAsBase64}"
-            -
-              Name: SENZING_API_SERVER_KEY_STORE_BASE64_ENCODED
-              Value: !Sub "${SenzingApiServerKeyStore}"
-            -
-              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_BASE64_ENCODED
-              Value: !Sub "${SenzingApiServerClientTrustStore}"
+            - Name: SENZING_CLOUD
+              Value: "aws"
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
