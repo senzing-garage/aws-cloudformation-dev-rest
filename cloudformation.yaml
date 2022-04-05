@@ -186,7 +186,7 @@ Mappings:
     Images:
       ApiServer: senzing/senzing-api-server:2.7.5
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
-      InitContainer: public.ecr.aws/senzing/init-container:test
+      InitContainer: mahchiahui/init-container:latest
       Yum: public.ecr.aws/senzing/yum:1.1.8
     Run:
       ApiServer: Yes
@@ -1620,7 +1620,7 @@ Resources:
               Value: !Ref SqsOutput
             -
               Name: SENZING_API_SERVER_KEY_STORE
-              Value: '/etc/opt/senzing/api-server-keystore.p12'
+              Value: '/etc/opt/senzing/sz-api-server-store.p12'
             -
               Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
               Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
@@ -1766,6 +1766,8 @@ Resources:
               Value: !Sub "${SenzingLicenseAsBase64}"
             - Name: SENZING_CLOUD
               Value: "aws"
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
@@ -1798,6 +1800,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-ecs-task-definition-init-efs"
+      TaskRoleArn: !GetAtt IamRoleInitSenzing.Arn
       Volumes:
         - Name: senzing-data-version-dir
           EFSVolumeConfiguration:
