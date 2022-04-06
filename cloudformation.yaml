@@ -921,9 +921,7 @@ Resources:
                       char_list = []
                       char_list.extend(random.choices(string.ascii_lowercase, k=1))
                       char_list.extend(random.choices(string.ascii_uppercase, k=1))
-                      char_list.extend(random.choices(string.digits, k=1))
-                      char_list.extend(random.choices(string.punctuation, k=1))
-                      char_list.extend(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length-4))
+                      char_list.extend(random.choices(string.ascii_letters, k=length-4))
                       random.shuffle(char_list)
                       response_data["RandomPassword"] = ''.join(char_list)
               except Exception as e:
@@ -1764,6 +1762,10 @@ Resources:
                 save
             - Name: SENZING_LICENSE_BASE64_ENCODED
               Value: !Sub "${SenzingLicenseAsBase64}"
+            - Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+            - Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
             - Name: SENZING_CLOUD
               Value: "aws"
             - Name: AWS_REGION
