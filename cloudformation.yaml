@@ -1496,23 +1496,23 @@ Resources:
   SecretServerKeystorePassword:
     Properties:
       Description: Senzing API Server Keystore password
-      Name: ServerKeystorePassword
+      Name: !Sub "${AWS::StackName}-server-keystore-password"
       SecretString: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
       Tags:
         -
           Key: Name
-          Value: !Sub "${AWS::StackName}-lambda-secret-server-keystore-password"
+          Value: !Sub "${AWS::StackName}-server-keystore-password"
     Type: 'AWS::SecretsManager::Secret'
   
   SecretClientKeystorePassword:
     Properties:
       Description: Senzing API Client Keystore password
-      Name: ClientKeystorePassword
+      Name: !Sub "${AWS::StackName}-client-keystore-password"
       SecretString: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
       Tags:
         -
           Key: Name
-          Value: !Sub "${AWS::StackName}-lambda-secret-client-keystore-password"
+          Value: !Sub "${AWS::StackName}-client-keystore-password"
     Type: 'AWS::SecretsManager::Secret'
 
   # -- Load balancing -----------------------------------------------------------
@@ -1768,6 +1768,8 @@ Resources:
               Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
             - Name: SENZING_CLOUD
               Value: "aws"
+            - Name: SENZING_STACK_NAME
+              Value: !Ref AWS::StackName
             - Name: AWS_REGION
               Value: !Ref AWS::Region
           Essential: true

@@ -17,7 +17,6 @@ Using this stack, a developer could interact with Senzing's api server programma
 ## Contents
 
 1. [Pre-requisites](#pre-requisites)
-1. [Generate keystores for SSL client authentication](#generate-keystores-for-ssl-client-authentication)
 1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
 1. [Example application](#example-application)
@@ -28,121 +27,6 @@ Using this stack, a developer could interact with Senzing's api server programma
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
 1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html) (it must be this specific java version)
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
-
-## Generate keystores for SSL client authentication
-
-:thinking: **Optional:**
-The following example instructions would typically be done by a **system admin**
-before bringing up this cloudformation template.
-If values for
-`KEYTOOL_SERVER_STORE_FILE_BASE64`,
-`KEYTOOL_SERVER_PASSWORD`,
-`KEYTOOL_SERVER_ALIAS`,
-`KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64`, and
-`KEYTOOL_CLIENT_PASSWORD`
-already exist, then skip forward to
-[Deploy](#deploy).
-
-To create SSL credentials:
-
-1. :pencil2: Create values for variables.
-   Example:
-
-    ```console
-    export KEYTOOL_CLIENT_ALIAS=my-senzing-client
-    export KEYTOOL_CLIENT_CERTIFICATE_FILE=~/my-senzing-client.cer
-    export KEYTOOL_CLIENT_PASSWORD=BadClientPassword
-    export KEYTOOL_CLIENT_STORE_FILE=~/my-senzing-client-store.p12
-    export KEYTOOL_CLIENT_TRUST_STORE_FILE=~/my-senzing-client-trust-store.p12
-    export KEYTOOL_SERVER_ALIAS=my-senzing-server
-    export KEYTOOL_SERVER_PASSWORD=BadServerPassword
-    export KEYTOOL_SERVER_STORE_FILE=~/my-senzing-server-store.p12
-    ```
-
-1. Synthesize variables.
-   Example:
-
-    ```console
-    export KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64=${KEYTOOL_CLIENT_TRUST_STORE_FILE}.base64
-    export KEYTOOL_SERVER_STORE_FILE_BASE64=${KEYTOOL_SERVER_STORE_FILE}.base64
-    ```
-
-1. Create the *server* PKCS12 key store (`KEYTOOL_SERVER_STORE_FILE`).
-
-   **NOTE:** Answer prompts for the 7 fields for the Distinguished Name ("DN") for the certificate being generated.
-   Example:
-
-    ```console
-    keytool \
-        -alias ${KEYTOOL_SERVER_ALIAS} \
-        -genkey \
-        -keyalg RSA \
-        -keysize 2048 \
-        -keystore ${KEYTOOL_SERVER_STORE_FILE} \
-        -storepass ${KEYTOOL_SERVER_PASSWORD} \
-        -storetype PKCS12 \
-        -validity 730
-    ```
-
-1. Create the *client* PKCS12 key store (`KEYTOOL_CLIENT_STORE_FILE`).
-   A single authorized client certificate is assumed for example purposes.
-   Create the client key and certificate for the client to use.
-
-   **NOTE:** Answer prompts for the 7 fields for the Distinguished Name ("DN") for the certificate being generated.
-   Example:
-
-    ```console
-    keytool \
-        -alias ${KEYTOOL_CLIENT_ALIAS} \
-        -genkey \
-        -keyalg RSA \
-        -keysize 2048 \
-        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
-        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
-        -storetype PKCS12 \
-        -validity 730
-    ```
-
-1. Export the client certificate (`KEYTOOL_CLIENT_CERTIFICATE_FILE`).
-   Example:
-
-    ```console
-    keytool \
-        -alias ${KEYTOOL_CLIENT_ALIAS} \
-        -export \
-        -file ${KEYTOOL_CLIENT_CERTIFICATE_FILE} \
-        -keystore ${KEYTOOL_CLIENT_STORE_FILE} \
-        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
-        -storetype PKCS12
-    ```
-
-1. Create a trust store containing certificate (`KEYTOOL_CLIENT_TRUST_STORE_FILE`).
-<br/>Note: You will be prompted with "Trust this certificate?", answer with:  "yes"
-<br/>
-<br/>Example:
-
-    ```console
-    keytool \
-        -alias ${KEYTOOL_CLIENT_ALIAS} \
-        -file ${KEYTOOL_CLIENT_CERTIFICATE_FILE} \
-        -import \
-        -keystore ${KEYTOOL_CLIENT_TRUST_STORE_FILE} \
-        -storepass ${KEYTOOL_CLIENT_PASSWORD} \
-        -storetype PKCS12
-    ```
-
-1. Convert server store and client store `.p12` files base64 strings.
-   Example:
-
-    ```console
-    base64 \
-      ${KEYTOOL_CLIENT_TRUST_STORE_FILE} \
-      >> ${KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64}
-
-    base64 \
-      ${KEYTOOL_SERVER_STORE_FILE} \
-      >> ${KEYTOOL_SERVER_STORE_FILE_BASE64}
-    ```
 
 ## Deploy
 
@@ -173,16 +57,6 @@ To create SSL credentials:
             1. Enter your email address.
                 1. Example: `me@example.com`
             1. Enter the permitted IP address block
-            1. Enter a base64 representation of the *server* keystore
-                1. Example: Contents of `KEYTOOL_SERVER_STORE_FILE_BASE64` file.
-            1. Enter the server keystore password
-                1. Example: Value of `KEYTOOL_SERVER_PASSWORD`.
-            1. Enter the server keystore alias
-                1. Example: Value of `KEYTOOL_SERVER_ALIAS`.
-            1. Enter a base64 representation of the *client* keystore
-                1. Example: Contents of `KEYTOOL_CLIENT_TRUST_STORE_FILE_BASE64` file.
-            1. Enter the client keystore password
-                1. Example: Value of `KEYTOOL_CLIENT_PASSWORD`.
         1. In **Security responsibility**
             1. Understand the nature of the security in the deployment.
             1. Once understood, enter "I AGREE".
