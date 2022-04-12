@@ -75,16 +75,16 @@ Using this stack, a developer could interact with Senzing's api server programma
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-1. Retrieve the client keystore and password secret name.
+1. Also retrieve the client keystore and password secret name from the output tab.
 
    ![secret name](assets/secret_name.png)
 
-1. Retrieve the client keystore from the secret manager with the following command.
+1. Retrieve the client keystore from the secret manager with the following command (Requires the permission secretsmanager:GetSecretValue):
     ```console
     aws secretsmanager get-secret-value --secret-id <replace-with-base64-client-keystore-secret-name> | jq -r .SecretString | base64 --decode > my-client-store.p12
     ```
 
-1. Retrieve the client keystore password with the following command
+1. Retrieve the client keystore password with the following command (Requires the permission secretsmanager:GetSecretValue):
     ```console
     aws secretsmanager get-secret-value --secret-id <replace-with-client-keystore-password-secret-name>
     ```
