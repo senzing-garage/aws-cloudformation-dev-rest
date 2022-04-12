@@ -69,8 +69,8 @@ Using this stack, a developer could interact with Senzing's api server programma
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: Retrieve the Senzing API Server URL, from the cloudformation stack that was brought up.
-   It can be found in the output tab, under the key "UrlApiServer".
+1. :pencil2: Retrieve the Senzing API Server URL, client keystore and password secret name from the cloudformation stack that was brought up.
+   It can be found in the output tab.
    This is what it looks like in the AWS Cloudformation management console:
 
    ![api url](assets/cloudformation_output_api.png)
@@ -134,8 +134,8 @@ To run the example python applications:
 <br/>Example:
 
     ```console
-    export CLIENT_STORE_PATH=${KEYTOOL_CLIENT_STORE_FILE}
-    export CLIENT_STORE_PASSWORD=${KEYTOOL_CLIENT_PASSWORD}
+    export CLIENT_STORE_PATH=my-client-store.p12
+    export CLIENT_STORE_PASSWORD=<insert-client-keystore-password>
     export API_URL=${SENZING_API_SERVER_URL}
     ```
 
