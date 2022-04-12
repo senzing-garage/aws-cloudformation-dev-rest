@@ -141,8 +141,8 @@ To run the example python applications:
 
 1. Use the following commands to run the example web application. 
 <br/>Note: Homebrew users may see deprecation warnings like "DEPRECATION: Configuring installation scheme with distutils ...". Do not worry and continue on. To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621)
-<br/> 
-<br/>Example:
+
+   <br/>Example:
 
     ```console
     cd ${GIT_REPOSITORY_DIR}/examples
