@@ -83,7 +83,7 @@ Using this stack, a developer could interact with Senzing's api server programma
 
 1. Retrieve the client keystore and password secret name.
 
-   ![api url](assets/secret_name.png)
+   ![secret name](assets/secret_name.png)
 
 1. Retrieve the client keystore from the secret manager with the following command.
     ```console
