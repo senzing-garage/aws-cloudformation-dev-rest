@@ -75,7 +75,7 @@ Using this stack, a developer could interact with Senzing's api server programma
 
    ![api url](assets/cloudformation_output_api.png)
 
-<br/>Example:
+   <br/>Example:
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
