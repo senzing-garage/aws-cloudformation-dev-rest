@@ -1992,6 +1992,12 @@ Outputs:
       Name: !Sub "${AWS::StackName}-secret-client-keystore-password"
     Value: !Sub "${AWS::StackName}-client-keystore-password"
 
+  SecretClientKeystoreBase64Output:
+    Description: "Base64 client keystore's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-client-keystore-base64"
+    Value: !Sub "${AWS::StackName}-client-keystore-base64"
+
   SubnetPublic1:
     Description: "The ID of public subnet 1. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#subnetpublic1"
     Export:

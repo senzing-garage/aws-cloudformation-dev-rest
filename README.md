@@ -83,16 +83,16 @@ Using this stack, a developer could interact with Senzing's api server programma
 
 1. Retrieve the client keystore and password secret name.
 
-   ![api url](assets/cloudformation_output_api.png)
+   ![api url](assets/secret_name.png)
 
 1. Retrieve the client keystore from the secret manager with the following command.
     ```console
-    aws secretsmanager get-secret-value --secret-id <replace-with-client-keystore-secret-name> | jq -r .SecretString | base64 --decode > my-client-store.p12
+    aws secretsmanager get-secret-value --secret-id <replace-with-base64-client-keystore-secret-name> | jq -r .SecretString | base64 --decode > my-client-store.p12
     ```
 
 1. Retrieve the client keystore password with the following command
     ```console
-    aws secretsmanager get-secret-value --secret-id ClientKeystorePassword
+    aws secretsmanager get-secret-value --secret-id <replace-with-client-keystore-password-secret-name>
     ```
 
 1. To interact directly with the Senzing API server,
@@ -105,7 +105,7 @@ Using this stack, a developer could interact with Senzing's api server programma
     curl \
         --insecure \
         ${SENZING_API_SERVER_URL}/heartbeat \
-        --cert ${KEYTOOL_CLIENT_STORE_FILE}:${KEYTOOL_CLIENT_PASSWORD} \
+        --cert my-client-store.p12:<client-keystore-password> \
         --cert-type P12
     ```
 
