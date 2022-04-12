@@ -25,7 +25,6 @@ Using this stack, a developer could interact with Senzing's api server programma
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. Install [adoptopenjdk 11](https://adoptopenjdk.net/archive.html) (it must be this specific java version)
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
 
 ## Deploy
@@ -70,7 +69,7 @@ Using this stack, a developer could interact with Senzing's api server programma
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: Retrieve the Senzing API Server URL from the cloudformation stack that was brought up.
+1. :pencil2: Retrieve the Senzing API Server URL, from the cloudformation stack that was brought up.
    It can be found in the output tab, under the key "UrlApiServer".
    This is what it looks like in the AWS Cloudformation management console:
 
@@ -80,6 +79,20 @@ Using this stack, a developer could interact with Senzing's api server programma
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
+    ```
+
+1. Retrieve the client keystore and password secret name.
+
+   ![api url](assets/cloudformation_output_api.png)
+
+1. Retrieve the client keystore from the secret manager with the following command.
+    ```console
+    aws secretsmanager get-secret-value --secret-id <replace-with-client-keystore-secret-name> | jq -r .SecretString | base64 --decode > my-client-store.p12
+    ```
+
+1. Retrieve the client keystore password with the following command
+    ```console
+    aws secretsmanager get-secret-value --secret-id ClientKeystorePassword
     ```
 
 1. To interact directly with the Senzing API server,

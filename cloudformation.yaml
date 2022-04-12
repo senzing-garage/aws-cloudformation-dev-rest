@@ -1979,6 +1979,18 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-sqs-output"
     Value: !Ref SqsOutput
+  
+  SecretServerKeystorePasswordOutput:
+    Description: "Server keystore password's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-server-keystore-password"
+    Value: !Sub "${AWS::StackName}-server-keystore-password"
+  
+  SecretClientKeystorePasswordOutput:
+    Description: "Client keystore password's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-client-keystore-password"
+    Value: !Sub "${AWS::StackName}-client-keystore-password"
 
   SubnetPublic1:
     Description: "The ID of public subnet 1. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#subnetpublic1"
@@ -2002,4 +2014,6 @@ Outputs:
   UrlApiServerHeartbeat:
     Condition: IfUsingApiServer
     Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#urlapiserverheartbeat"
+    Export:
+      Name: !Sub "${AWS::StackName}-url-api-server-heartbeat"
     Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat"
