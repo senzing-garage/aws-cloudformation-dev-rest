@@ -48,8 +48,6 @@ can help evaluate costs.
                    Cloudformation stack
                    Example:  `senzing-db`
             1. In **Security**
-                1. Enter your email address.
-                    1. Example: `me@example.com`
                 1. Enter the permitted IP address block
             1. In **Security responsibility**
                 1. Understand the nature of the security in the deployment.
@@ -57,7 +55,7 @@ can help evaluate costs.
         1. At lower-right, click "Next" button.
     1. In **Configure stack options**
         1. At lower-right, click "Next" button.
-    1. In **Review senzing-basic**
+    1. In **Review [name-of-stack]**
         1. Near the bottom, in **Capabilities**
             1. Check ":ballot_box_with_check: I acknowledge that AWS CloudFormation might create IAM resources."
         1. At lower-right, click "Create stack" button.
