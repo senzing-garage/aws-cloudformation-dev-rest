@@ -3,14 +3,14 @@
 ## Synopsis
 
 Using the AWS Cloudformation template in this repository,
-a developer can bring up an AWS stack to interact with Senzing's API server
+a developer can bring up an AWS stack to interact with Senzing's API Server
 in a secure manner.
 
 ## Overview
 
-The following diagram illustrates a Senzing stack that would be brought up by the AWS CloudFormation template.
+The following diagram illustrates a Senzing stack brought up by the AWS CloudFormation template.
 
-Using this stack, a developer could interact with Senzing's api server programmatically.
+Using this stack, a developer could interact with Senzing's API Server programmatically.
 
 ![overview diagram](assets/overview_diagram.png)
 
@@ -92,7 +92,7 @@ Using this stack, a developer could interact with Senzing's api server programma
 1. To interact directly with the Senzing API server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the API server.
-   <br/> 
+   <br/>
    <br/>Example:
 
     ```console
@@ -124,7 +124,7 @@ To run the example python applications:
    to install the Git repository.
 
 1. Export the following variables.
-   <br/> 
+   <br/>
 <br/>Example:
 
     ```console
@@ -133,7 +133,7 @@ To run the example python applications:
     export API_URL=${SENZING_API_SERVER_URL}
     ```
 
-1. Use the following commands to run the example web application. 
+1. Use the following commands to run the example web application.
 <br/>Note: Homebrew users may see deprecation warnings like "DEPRECATION: Configuring installation scheme with distutils ...". Do not worry and continue on. To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621)
 
    <br/>Example:
@@ -147,7 +147,7 @@ To run the example python applications:
 
 1. To get the example web application to interact the Senzing's api server,
    simply send the following `curl` commands.
-   <br/> 
+   <br/>
 <br/>Example:
 
     ```console
