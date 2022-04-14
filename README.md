@@ -19,13 +19,14 @@ Using this stack, a developer could interact with Senzing's API Server programma
 1. [Pre-requisites](#pre-requisites)
 1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
-1. [Example application](#example-application)
+1. [Example applications](#example-applications)
 1. [References](#references)
 
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
 1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
+1. Install [aws](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-aws-cli.md)
 
 ## Deploy
 
