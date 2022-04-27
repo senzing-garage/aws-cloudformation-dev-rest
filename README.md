@@ -64,7 +64,7 @@ can help evaluate costs.
 ## Interact with Senzing API Server using SSL client authentication
 
 1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
-   retrieve the Senzing API Server URL, client keystore, and password secret name.
+   retrieve the Senzing API Server URL.
    This is what it looks like in the AWS Cloudformation management console:
 
    ![api url](assets/cloudformation_output_api.png)
@@ -75,31 +75,48 @@ can help evaluate costs.
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-1. Also retrieve the client keystore and password secret name from the output tab.
+1. :pencil2: Also, retrieve the client keystore and password secret name from the "Outputs" tab.
 
    ![secret name](assets/secret_name.png)
 
-1. Retrieve the client keystore from the secret manager with the following command <br/>(Requires the permission secretsmanager:GetSecretValue):
+   Example:
+
     ```console
-    aws secretsmanager get-secret-value --secret-id <replace-with-base64-client-keystore-secret-name> | jq -r .SecretString | base64 --decode > my-client-store.p12
+    export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-secret-client-keystore-base64
+    export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-secret-client-keystore-password
     ```
 
-1. Retrieve the client keystore password with the following command <br/>(Requires the permission secretsmanager:GetSecretValue):
+1. Retrieve the client keystore from the secret manager.
+   Requires the AWS permission `secretsmanager:GetSecretValue`.
+   Example:
+
     ```console
-    aws secretsmanager get-secret-value --secret-id <replace-with-client-keystore-password-secret-name>
+    aws secretsmanager get-secret-value \
+        --secret-id ${AWS_CLIENT_KEYSTORE} \
+    | jq -r .SecretString \
+    | base64 --decode \
+    > my-client-store.p12
+    ```
+
+1. Retrieve the client keystore password.
+   Requires the AWS permission `secretsmanager:GetSecretValue`.
+   Example:
+
+    ```console
+    aws secretsmanager get-secret-value \
+        --secret-id ${AWS_CLIENT_KEYSTORE_PASSWORD}
     ```
 
 1. To interact directly with the Senzing API server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the API server.
-   <br/>
-   <br/>Example:
+   Example:
 
     ```console
     curl \
         --insecure \
         ${SENZING_API_SERVER_URL}/heartbeat \
-        --cert my-client-store.p12:<client-keystore-password> \
+        --cert my-client-store.p12:${AWS_CLIENT_KEYSTORE_PASSWORD} \
         --cert-type P12
     ```
 
