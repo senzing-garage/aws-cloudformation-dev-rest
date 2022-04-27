@@ -65,28 +65,28 @@ can help evaluate costs.
 
 1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
    retrieve the Senzing API Server URL.
-   This is what it looks like in the AWS Cloudformation management console:
-
-   ![api url](assets/cloudformation_output_api.png)
-
    Example:
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
-   retrieve the client keystore and password secret name from the "Outputs" tab.
    This is what it looks like in the AWS Cloudformation management console:
 
-   ![secret name](assets/secret_name.png)
+   ![api url](assets/cloudformation_output_api.png)
 
+1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
+   retrieve the client keystore and password secret name from the "Outputs" tab.
    Example:
 
     ```console
     export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-secret-client-keystore-base64
     export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-secret-client-keystore-password
     ```
+
+   This is what it looks like in the AWS Cloudformation management console:
+
+   ![secret name](assets/secret_name.png)
 
 1. Retrieve the client keystore from the secret manager.
    Requires the AWS permission `secretsmanager:GetSecretValue`.
