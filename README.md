@@ -63,20 +63,20 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
-   retrieve the Senzing API Server URL.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   identify the Senzing API Server URL.
    Example:
 
     ```console
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-   This is what it looks like in the AWS Cloudformation management console:
+   This is where to find the information in the AWS Cloudformation management console:
 
    ![api url](assets/cloudformation_output_api.png)
 
-1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
-   retrieve the client keystore and password secret name from the "Outputs" tab.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   identify the client keystore and password secret name.
    Example:
 
     ```console
@@ -84,7 +84,7 @@ can help evaluate costs.
     export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-secret-client-keystore-password
     ```
 
-   This is what it looks like in the AWS Cloudformation management console:
+   This is where to find the information in the AWS Cloudformation management console:
 
    ![secret name](assets/secret_name.png)
 
