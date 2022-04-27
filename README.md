@@ -94,7 +94,7 @@ can help evaluate costs.
 
     ```console
     aws secretsmanager get-secret-value \
-        --secret-id ${AWS_CLIENT_KEYSTORE} \
+        --secret-id ${SECRET_CLIENT_KEYSTORE_BASE64} \
     | jq -r .SecretString \
     | base64 --decode \
     > my-client-store.p12
@@ -106,7 +106,7 @@ can help evaluate costs.
 
     ```console
     aws secretsmanager get-secret-value \
-        --secret-id ${AWS_CLIENT_KEYSTORE_PASSWORD}
+        --secret-id ${SECRET_CLIENT_KEYSTORE_PASSWORD}
     ```
 
 1. To interact directly with the Senzing API server,
@@ -118,7 +118,7 @@ can help evaluate costs.
     curl \
         --insecure \
         ${SENZING_API_SERVER_URL}/heartbeat \
-        --cert my-client-store.p12:${AWS_CLIENT_KEYSTORE_PASSWORD} \
+        --cert my-client-store.p12:${SECRET_CLIENT_KEYSTORE_PASSWORD} \
         --cert-type P12
     ```
 
