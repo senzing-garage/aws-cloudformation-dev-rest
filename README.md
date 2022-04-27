@@ -63,7 +63,7 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
    identify the Senzing API Server URL from the "Value".
    Example:
 
@@ -75,8 +75,8 @@ can help evaluate costs.
 
    ![api url](assets/cloudformation_output_api.png)
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
-   identify the client keystore and password secret name from the "Value" column.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
+   identify the client keystore and password secret name.
    Example:
 
     ```console
