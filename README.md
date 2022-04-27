@@ -75,7 +75,9 @@ can help evaluate costs.
     export SENZING_API_SERVER_URL=https://XXXXXXXX.amazonaws.com/api
     ```
 
-1. :pencil2: Also, retrieve the client keystore and password secret name from the "Outputs" tab.
+1. :pencil2: In the Cloudformation Stack details "Outputs" tab,
+   retrieve the client keystore and password secret name from the "Outputs" tab.
+   This is what it looks like in the AWS Cloudformation management console:
 
    ![secret name](assets/secret_name.png)
 
@@ -141,8 +143,7 @@ To run the example python applications:
    to install the Git repository.
 
 1. Export the following variables.
-   <br/>
-<br/>Example:
+   Example:
 
     ```console
     export CLIENT_STORE_PATH=my-client-store.p12
@@ -151,9 +152,11 @@ To run the example python applications:
     ```
 
 1. Use the following commands to run the example web application.
-<br/>Note: Homebrew users may see deprecation warnings like "DEPRECATION: Configuring installation scheme with distutils ...". Do not worry and continue on. To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621)
-
-   <br/>Example:
+   Note: Homebrew users may see deprecation warnings like
+   "DEPRECATION: Configuring installation scheme with distutils ...".
+   Do not worry and continue on.
+   To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621).
+   Example:
 
     ```console
     cd ${GIT_REPOSITORY_DIR}/examples
@@ -164,8 +167,7 @@ To run the example python applications:
 
 1. To get the example web application to interact the Senzing's api server,
    simply send the following `curl` commands.
-   <br/>
-<br/>Example:
+   Example:
 
     ```console
     curl http://127.0.0.1:5000
@@ -180,12 +182,11 @@ To run the example python applications:
 
 1. Use the following command to run the example cli application.
 
-    ```
+    ```console
     python examples/cli_demo.py
     ```
 
 1. For more APIs, please refer to this [swagger documentation](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml).
-
 
 ## References
 
