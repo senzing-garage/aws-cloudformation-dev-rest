@@ -89,7 +89,7 @@ can help evaluate costs.
    ![secret name](assets/secret_name.png)
 
 1. Retrieve the client keystore from the secret manager.
-   The AWS permission `secretsmanager:GetSecretValue` is required.
+   The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
 
     ```console
@@ -101,7 +101,7 @@ can help evaluate costs.
     ```
 
 1. Retrieve the client keystore password.
-   The AWS permission `secretsmanager:GetSecretValue` is required.
+   The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
 
     ```console
