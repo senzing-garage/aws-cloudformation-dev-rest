@@ -136,10 +136,10 @@ can help evaluate costs.
 
 Two example applications were created to illustrate how an application can authenticate with the Senzing's API Server.
 
-1. [cli_demo.py](examples/cli_demo.py) - The cli application.
+1. [cli_demo.py](examples/cli_demo.py) - The command line interface (CLI) application.
 1. [webapp_demo.py](examples/webapp_demo.py) - The web application.
 
-To run the example python applications:
+### Example applications prerequisites
 
 1. Clone repository.
    First, set these environment variable values:
@@ -168,11 +168,15 @@ To run the example python applications:
     pip install -r requirements.txt
     ```
 
-1. Use the following command to run the example cli application.
+### CLI application
+
+1. Use the following command to run the example CLI application.
 
     ```console
     ${GIT_REPOSITORY_DIR}/examples/cli_demo.py
     ```
+
+### Web application
 
 1. Run the example web application.
    **Note:** Homebrew users may see deprecation warnings like
