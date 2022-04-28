@@ -139,7 +139,7 @@ Two example applications were created to illustrate how an application can authe
 1. [cli_demo.py](examples/cli_demo.py) - The command line interface (CLI) application.
 1. [webapp_demo.py](examples/webapp_demo.py) - The web application.
 
-### Example applications prerequisites
+### Example application prerequisites
 
 1. Clone repository.
    First, set these environment variable values:
@@ -182,7 +182,8 @@ Two example applications were created to illustrate how an application can authe
    **Note:** Homebrew users may see deprecation warnings like
    "DEPRECATION: Configuring installation scheme with distutils ...".
    Do not worry and continue on.
-   To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621).
+   For more information, visit
+   [Homebrew issue #76621](https://github.com/Homebrew/homebrew-core/issues/76621).
    Example:
 
     ```console
