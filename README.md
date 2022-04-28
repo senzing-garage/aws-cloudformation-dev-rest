@@ -88,6 +88,13 @@ can help evaluate costs.
 
    ![secret name](assets/secret_name.png)
 
+1. :pencil2: Define a location for the P12 file.
+   Example:
+
+    ```console
+    export CLIENT_STORE_P12_FILE=~/my-client-store.p12
+    ```
+
 1. Retrieve the client keystore from the secret manager.
    The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
@@ -97,10 +104,10 @@ can help evaluate costs.
         --secret-id ${SECRET_CLIENT_KEYSTORE_BASE64} \
     | jq --raw-output .SecretString \
     | base64 --decode \
-    > my-client-store.p12
+    > ${CLIENT_STORE_P12_FILE}
     ```
 
-1. Retrieve the client keystore password.
+1. Retrieve the client keystore password value.
    The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
 
@@ -121,7 +128,7 @@ can help evaluate costs.
     curl \
         --insecure \
         ${SENZING_API_SERVER_URL}/heartbeat \
-        --cert my-client-store.p12:${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE} \
+        --cert ${CLIENT_STORE_P12_FILE}:${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE} \
         --cert-type P12
     ```
 
