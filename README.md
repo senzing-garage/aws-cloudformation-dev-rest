@@ -160,23 +160,33 @@ To run the example python applications:
     1. `CLIENT_STORE_P12_FILE`
     1. `SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE`
 
+1. Install prerequisites.
+   Example:
 
-1. Use the following commands to run the example web application.
-   Note: Homebrew users may see deprecation warnings like
+    ```console
+    cd ${GIT_REPOSITORY_DIR}/examples
+    pip install -r requirements.txt
+    ```
+
+1. Use the following command to run the example cli application.
+
+    ```console
+    ${GIT_REPOSITORY_DIR}/examples/cli_demo.py
+    ```
+
+1. Run the example web application.
+   **Note:** Homebrew users may see deprecation warnings like
    "DEPRECATION: Configuring installation scheme with distutils ...".
    Do not worry and continue on.
    To understand the warnings, refer to [this](https://github.com/Homebrew/homebrew-core/issues/76621).
    Example:
 
     ```console
-    cd ${GIT_REPOSITORY_DIR}/examples
-    pip install -r requirements.txt
-    export FLASK_APP=webapp_demo
-    flask run
+    ${GIT_REPOSITORY_DIR}/examples/webapp_demo.py
     ```
 
-1. To get the example web application to interact the Senzing's api server,
-   simply send the following `curl` commands.
+1. In a separate terminal, run the following `curl` commands
+   to get the example web application to interact the Senzing's api server,
    Example:
 
     ```console
@@ -189,12 +199,6 @@ To run the example python applications:
 
    - [http://127.0.0.1:5000](http://127.0.0.1:5000)
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
-
-1. Use the following command to run the example cli application.
-
-    ```console
-    ${GIT_REPOSITORY_DIR}/examples/cli_demo.py
-    ```
 
 1. For more APIs, please refer to this [swagger documentation](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml).
 
