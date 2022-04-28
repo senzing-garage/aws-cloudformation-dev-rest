@@ -95,7 +95,7 @@ can help evaluate costs.
     export CLIENT_STORE_P12_FILE=~/my-client-store.p12
     ```
 
-1. Retrieve the client keystore from the secret manager.
+1. Poplulate the `CLIENT_STORE_P12_FILE` by retrieving the client keystore from the secret manager.
    The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
 
