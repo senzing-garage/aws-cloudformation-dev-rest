@@ -204,7 +204,8 @@ Two example applications were created to illustrate how an application can authe
    - [http://127.0.0.1:5000](http://127.0.0.1:5000)
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
 
-1. For more APIs, please refer to this [swagger documentation](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml).
+1. For more Senzing HTTP REST APIs, please refer to the
+   [swagger documentation](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/master/senzing-rest-api.yaml).
 
 ## References
 
