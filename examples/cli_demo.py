@@ -1,17 +1,25 @@
 #! /usr/bin/env python3
 
-from requests_pkcs12 import get, post
+'''
+Example Command line interface.
+'''
+
+# Import from standard library. https://docs.python.org/3/library/
+
 import os
-import json
+
+# Import from https://pypi.org/
+
+from requests_pkcs12 import get
 
 # For more APIs, please refer to this swagger documentation
 # https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml
 
-client_store_path = os.getenv('CLIENT_STORE_PATH')
-client_store_password = os.getenv('CLIENT_STORE_PASSWORD')
-api_url = os.getenv('API_URL')
+CLIENT_STORE_P12_FILE = os.getenv('CLIENT_STORE_P12_FILE')
+SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE = os.getenv('SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE')
+SENZING_API_SERVER_URL = os.getenv('SENZING_API_SERVER_URL')
 
-api_heartbeat_url = api_url + "/heartbeat"
-response = get(api_heartbeat_url, verify=False, pkcs12_filename=client_store_path, pkcs12_password=client_store_password)
+API_HEARTBEAT_URL = SENZING_API_SERVER_URL + "/heartbeat"
+RESPONSE = get(API_HEARTBEAT_URL, verify=False, pkcs12_filename=CLIENT_STORE_P12_FILE, pkcs12_password=SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE)
 
-print(response.text)
+print(RESPONSE.text)

@@ -134,7 +134,10 @@ can help evaluate costs.
 
 ## Example applications
 
-Two example applications were created to illustrate how an application can authenticate with the Senzing's API Server. The cli application can be found [here](examples/cli_demo.py) and the web application can be found [here](examples/webapp_demo.py)
+Two example applications were created to illustrate how an application can authenticate with the Senzing's API Server.
+
+1. [cli_demo.py](examples/cli_demo.py) - The cli application.
+1. [webapp_demo.py](examples/webapp_demo.py) - The web application.
 
 To run the example python applications:
 
@@ -152,14 +155,11 @@ To run the example python applications:
    follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
    to install the Git repository.
 
-1. Export the following variables.
-   Example:
+1. Set the following environment variable as seen above:
+    1. `SENZING_API_SERVER_URL`
+    1. `CLIENT_STORE_P12_FILE`
+    1. `SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE`
 
-    ```console
-    export CLIENT_STORE_PATH=my-client-store.p12
-    export CLIENT_STORE_PASSWORD=<insert-client-keystore-password>
-    export API_URL=${SENZING_API_SERVER_URL}
-    ```
 
 1. Use the following commands to run the example web application.
    Note: Homebrew users may see deprecation warnings like
@@ -193,7 +193,7 @@ To run the example python applications:
 1. Use the following command to run the example cli application.
 
     ```console
-    python examples/cli_demo.py
+    ${GIT_REPOSITORY_DIR}/examples/cli_demo.py
     ```
 
 1. For more APIs, please refer to this [swagger documentation](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml).
