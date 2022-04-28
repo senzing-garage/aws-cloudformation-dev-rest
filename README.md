@@ -108,7 +108,8 @@ can help evaluate costs.
     export SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE=$( \
         aws secretsmanager get-secret-value \
             --secret-id ${SECRET_CLIENT_KEYSTORE_PASSWORD} \
-        | jq --raw-output .SecretString
+        | jq --raw-output .SecretString \
+        )
     ```
 
 1. To interact directly with the Senzing API server,
