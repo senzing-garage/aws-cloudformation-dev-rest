@@ -119,9 +119,9 @@ can help evaluate costs.
         )
     ```
 
-1. To interact directly with the Senzing API server,
+1. To interact directly with the Senzing API Server,
    use the `--cert` and `--cert-type` options of
-   `curl` to authenticate to the API server.
+   `curl` to authenticate to the Senzing API Server.
    Example:
 
     ```console
@@ -191,7 +191,7 @@ Two example applications were created to illustrate how an application can authe
     ```
 
 1. In a separate terminal, run the following `curl` commands
-   to get the example web application to interact the Senzing's api server,
+   to get the example web application to interact with the Senzing API Server,
    Example:
 
     ```console
