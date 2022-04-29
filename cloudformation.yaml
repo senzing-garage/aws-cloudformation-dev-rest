@@ -189,7 +189,7 @@ Mappings:
     Images:
       ApiServer: senzing/senzing-api-server:2.7.5
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
-      InitContainer: mahchiahui/init-container:latest
+      InitContainer: senzing/init-container:1.7.6
       Yum: senzing/yum:latest
     Run:
       ApiServer: Yes
