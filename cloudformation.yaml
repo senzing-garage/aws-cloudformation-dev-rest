@@ -33,11 +33,6 @@ Metadata:
           default: Security
         Parameters:
           - CidrInbound
-          - SenzingApiServerKeyStore
-          - SenzingApiServerKeyStorePassword
-          - SenzingApiServerKeyStoreAlias
-          - SenzingApiServerClientTrustStore
-          - SenzingApiServerClientTrustStorePassword
       - Label:
           default: Security responsibility
         Parameters:
@@ -58,16 +53,6 @@ Metadata:
           Before using authentic PII, ensure the security of your deployment.
           The security of this deployment is your responsibility.
           To acknowledge your understanding and acceptance of the foregoing, type “I AGREE”.
-      SenzingApiServerClientTrustStore:
-        default: 'To enable ssl client authentication in the api server, please input base-64 encoded client keystore string'
-      SenzingApiServerClientTrustStorePassword:
-        default: 'If enabling ssl client authentication, provide client keystore password'
-      SenzingApiServerKeyStore:
-        default: 'To enable ssl client authentication in the api server, please input base-64 encoded server keystore string'
-      SenzingApiServerKeyStorePassword:
-        default: 'If enabling ssl client authentication, provide server keystore password'
-      SenzingApiServerKeyStoreAlias:
-        default: 'If enabling ssl client authentication, provide server keystore alias'
       SenzingLicenseAsBase64:
         default: >-
           The Senzing Evaluation comes with 100k free records of entity resolution.
@@ -112,33 +97,6 @@ Parameters:
     Description: "Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#securityresponsibility"
     Type: String
 
-  SenzingApiServerKeyStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystore'
-    Type: String
-
-  SenzingApiServerKeyStorePassword:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorepassword'
-    Type: String
-
-  SenzingApiServerKeyStoreAlias:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzingapiserverkeystorealias'
-    Type: String
-
-  SenzingApiServerClientTrustStore:
-    ConstraintDescription: 'Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64'
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStore'
-    Type: String
-
-  SenzingApiServerClientTrustStorePassword:
-    Default: '_'
-    Description: 'Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#SenzingApiServerClientTrustStorepassword'
-    Type: String
-
   SenzingLicenseAsBase64:
     ConstraintDescription: "Must contain only Base64 characters. see https://hub.senzing.com/aws-cloudformation-dev-rest/details#senzinglicenseasbase64"
     Default: " "
@@ -147,6 +105,7 @@ Parameters:
 
   SenzingVersion:
     AllowedValues:
+      - "2.8.8"
       - "2.8.4"
       - "2.8.3"
       - "2.8.2"
@@ -155,7 +114,7 @@ Parameters:
       - "2.6.0"
       - "2.5.1"
       - "2.5.0"
-    Default: "2.8.4"
+    Default: "2.8.8"
     Description: "Help: https://hub.senzing.com/aws-cloudformation-ecs-senzing-stack-basic/#senzingversion"
     Type: String
 
@@ -207,6 +166,8 @@ Rules:
 
 Mappings:
   SenzingVersionMap:
+    "2.8.8":
+      value: "senzingapi-2.8.8-22088"
     "2.8.4":
       value: "senzingapi-2.8.4-21311"
     "2.8.3":
@@ -228,8 +189,8 @@ Mappings:
     Images:
       ApiServer: senzing/senzing-api-server:2.7.5
       BusyBox: public.ecr.aws/senzing/busybox:1.34.0
-      InitContainer: public.ecr.aws/senzing/init-container:test
-      Yum: public.ecr.aws/senzing/yum:1.1.8
+      InitContainer: public.ecr.aws/init-container:1.7.6
+      Yum: senzing/yum:latest
     Run:
       ApiServer: Yes
     Stack:
@@ -524,7 +485,22 @@ Resources:
         - !Ref IamRoleInitPostgres
         - !Ref IamRoleInitSenzing
     Type: AWS::IAM::Policy
-  
+
+  IamPolicySecretManager:
+    Properties:
+      PolicyName: !Sub "${AWS::StackName}-iam-policy-secret-manager"
+      PolicyDocument:
+        Statement:
+          - Action:
+              - secretsmanager:CreateSecret
+            Effect: Allow
+            Resource:
+              - "*"
+        Version: "2012-10-17"
+      Roles:
+        - !Ref IamRoleInitSenzing
+    Type: AWS::IAM::Policy
+
   IamPolicySqsProducer:
     Properties:
       PolicyName: !Sub "${AWS::StackName}-iam-policy-sqs-producer"
@@ -678,7 +654,7 @@ Resources:
         Fn::ImportValue:
           Fn::Sub: "${DatabaseStack}-ec2-VpcId"
     Type: AWS::EC2::SecurityGroup
-  
+
   Ec2SecurityGroupLoadBalancerPublic:
     Properties:
       GroupDescription: !Sub "${AWS::StackName} - Public load balancer open ports."
@@ -923,6 +899,50 @@ Resources:
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
   # AWS Console: https://console.aws.amazon.com/lambda/home?#/functions > Search for {stack}
+
+  LambdaFunctionRandomPassword:
+    Properties:
+      Code:
+        ZipFile: |
+          #!/usr/bin/env python3
+          import cfnresponse
+          import json
+          import logging
+          import random
+          import string
+          import traceback
+          logger = logging.getLogger()
+          logger.setLevel(logging.INFO)
+          def handler(event, context):
+              result = cfnresponse.SUCCESS
+              response_data = {}
+              try:
+                  logger.info("Event: {0}".format(json.dumps(event)))
+                  if event['RequestType'] in ['Create', 'Update']:
+                      properties = event.get('ResourceProperties', {})
+                      length = int(properties.get('Length', 0))
+                      char_list = []
+                      char_list.extend(random.choices(string.ascii_lowercase, k=1))
+                      char_list.extend(random.choices(string.ascii_uppercase, k=1))
+                      char_list.extend(random.choices(string.ascii_letters, k=length-4))
+                      random.shuffle(char_list)
+                      response_data["RandomPassword"] = ''.join(char_list)
+              except Exception as e:
+                  logger.error(e)
+                  traceback.print_exc()
+                  result = cfnresponse.FAILED
+              finally:
+                  cfnresponse.send(event, context, result, response_data)
+      Description: Generate string of random characters for a password.
+      FunctionName: !Sub "${AWS::StackName}-lambda-random-password"
+      Handler: index.handler
+      Role: !GetAtt IamRoleLambda.Arn
+      Runtime: python3.8
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-random-password"
+      Timeout: 600
+    Type: AWS::Lambda::Function
 
   LambdaFunctionRunTask:
     DependsOn:
@@ -1451,6 +1471,53 @@ Resources:
           Value: !Sub "${AWS::StackName}-lambda-runner-wait-for-efs"
     Type: Custom::LambdaRunnerWaitForEfs
 
+  LambdaRunnerServerKeystorePassword:
+    Properties:
+      ClusterId: !Ref EcsCluster
+      Length: 16
+      ServiceToken: !GetAtt LambdaFunctionRandomPassword.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-server-keystore-password"
+    Type: Custom::LambdaRunnerServerKeystorePassword
+
+  LambdaRunnerClientKeystorePassword:
+    Properties:
+      ClusterId: !Ref EcsCluster
+      Length: 16
+      ServiceToken: !GetAtt LambdaFunctionRandomPassword.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-client-keystore-password"
+    Type: Custom::LambdaRunnerClientKeystorePassword
+
+  # -- Secrets Manager ----------------------------------------------------------
+
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-secretsmanager-secret.html
+  # AWS Console: https://console.aws.amazon.com/secretsmanager/home
+
+  SecretServerKeystorePassword:
+    Properties:
+      Description: Senzing API Server Keystore password
+      Name: !Sub "${AWS::StackName}-server-keystore-password"
+      SecretString: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+      Tags:
+        -
+          Key: Name
+          Value: !Sub "${AWS::StackName}-server-keystore-password"
+    Type: 'AWS::SecretsManager::Secret'
+
+  SecretClientKeystorePassword:
+    Properties:
+      Description: Senzing API Client Keystore password
+      Name: !Sub "${AWS::StackName}-client-keystore-password"
+      SecretString: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
+      Tags:
+        -
+          Key: Name
+          Value: !Sub "${AWS::StackName}-client-keystore-password"
+    Type: 'AWS::SecretsManager::Secret'
+
   # -- Load balancing -----------------------------------------------------------
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html
@@ -1554,19 +1621,16 @@ Resources:
               Value: !Ref SqsOutput
             -
               Name: SENZING_API_SERVER_KEY_STORE
-              Value: '/etc/opt/senzing/api-server-keystore.p12'
+              Value: '/etc/opt/senzing/sz-api-server-store.p12'
             -
               Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
-              Value: !Sub '${SenzingApiServerKeyStorePassword}'
-            -
-              Name: SENZING_API_SERVER_KEY_ALIAS
-              Value: !Sub '${SenzingApiServerKeyStoreAlias}'
+              Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE
-              Value: '/etc/opt/senzing/api-server-client-keystore.p12'
+              Value: '/etc/opt/senzing/my-client-trust-store.p12'
             -
               Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
-              Value: !Sub '${SenzingApiServerClientTrustStorePassword}'
+              Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
           LogConfiguration:
@@ -1701,12 +1765,16 @@ Resources:
                 save
             - Name: SENZING_LICENSE_BASE64_ENCODED
               Value: !Sub "${SenzingLicenseAsBase64}"
-            -
-              Name: SENZING_API_SERVER_KEY_STORE_BASE64_ENCODED
-              Value: !Sub "${SenzingApiServerKeyStore}"
-            -
-              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_BASE64_ENCODED
-              Value: !Sub "${SenzingApiServerClientTrustStore}"
+            - Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+            - Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
+            - Name: SENZING_CLOUD
+              Value: "aws"
+            - Name: SENZING_STACK_NAME
+              Value: !Ref AWS::StackName
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
           Essential: true
           Image: !FindInMap [Constants, Images, InitContainer]
           LogConfiguration:
@@ -1739,6 +1807,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-ecs-task-definition-init-efs"
+      TaskRoleArn: !GetAtt IamRoleInitSenzing.Arn
       Volumes:
         - Name: senzing-data-version-dir
           EFSVolumeConfiguration:
@@ -1914,6 +1983,24 @@ Outputs:
       Name: !Sub "${AWS::StackName}-sqs-output"
     Value: !Ref SqsOutput
 
+  SecretServerKeystorePasswordOutput:
+    Description: "Server keystore password's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-server-keystore-password"
+    Value: !Sub "${AWS::StackName}-server-keystore-password"
+
+  SecretClientKeystorePasswordOutput:
+    Description: "Client keystore password's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-client-keystore-password"
+    Value: !Sub "${AWS::StackName}-client-keystore-password"
+
+  SecretClientKeystoreBase64Output:
+    Description: "Base64 client keystore's secret name"
+    Export:
+      Name: !Sub "${AWS::StackName}-secret-client-keystore-base64"
+    Value: !Sub "${AWS::StackName}-client-keystore-base64"
+
   SubnetPublic1:
     Description: "The ID of public subnet 1. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#subnetpublic1"
     Export:
@@ -1936,4 +2023,6 @@ Outputs:
   UrlApiServerHeartbeat:
     Condition: IfUsingApiServer
     Description: "URL for API Server's heartbeat. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#urlapiserverheartbeat"
+    Export:
+      Name: !Sub "${AWS::StackName}-url-api-server-heartbeat"
     Value: !Sub "https://${NetworkLoadBalancerPublic.DNSName}/api/heartbeat"
