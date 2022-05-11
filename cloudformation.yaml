@@ -1731,6 +1731,8 @@ Resources:
               Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
             - Name: SENZING_CLOUD
               Value: "aws"
+            - Name: SENZING_GENERATE_SSL_KEYSTORE
+              Value: "True"
             - Name: SENZING_STACK_NAME
               Value: !Ref AWS::StackName
             - Name: AWS_REGION
