@@ -7,7 +7,7 @@ AWSTemplateFormatVersion: 2010-09-09
 #     aws cloudformation validate-template: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cloudformation/validate-template.html
 
 Description: >-
-  Senzing aws-cloudformation-dev-rest: 0.0.2
+  Senzing aws-cloudformation-dev-rest: 1.0.0
   For more information see
   https://github.com/Senzing/aws-cloudformation-dev-rest
 
@@ -66,7 +66,8 @@ Metadata:
 # -----------------------------------------------------------------------------
 
 Parameters:
-  # AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Parameters
+
+# AWS Console: https://console.aws.amazon.com/cloudformation/home?#/stacks > {stack} > Parameters
 
   AcceptEula:
     AllowedPattern: ".+|^I_ACCEPT_THE_SENZING_EULA$"
@@ -104,8 +105,16 @@ Parameters:
 
   SenzingVersion:
     AllowedValues:
-      - "3.0.0"
-    Default: "3.0.0"
+      - "2.8.8"
+      - "2.8.4"
+      - "2.8.3"
+      - "2.8.2"
+      - "2.8.1"
+      - "2.7.0"
+      - "2.6.0"
+      - "2.5.1"
+      - "2.5.0"
+    Default: "2.8.8"
     Description: "Help: https://hub.senzing.com/aws-cloudformation-ecs-senzing-stack-basic/#senzingversion"
     Type: String
 
@@ -157,15 +166,31 @@ Rules:
 
 Mappings:
   SenzingVersionMap:
-    "3.0.0":
-      value: "senzingapi=3.0.0-22119"
+    "2.8.8":
+      value: "senzingapi-2.8.8-22088"
+    "2.8.4":
+      value: "senzingapi-2.8.4-21311"
+    "2.8.3":
+      value: "senzingapi-2.8.3-21277"
+    "2.8.2":
+      value: "senzingapi-2.8.2-21243"
+    "2.8.1":
+      value: "senzingapi-2.8.1-21217"
+    "2.7.0":
+      value: "senzingapi-2.7.0-21153"
+    "2.6.0":
+      value: "senzingapi-2.6.0-21133"
+    "2.5.1":
+      value: "senzingapi-2.5.1-21124"
+    "2.5.0":
+      value: "senzingapi-2.5.0-21104"
 
   Constants:
     Images:
-      ApiServer: public.ecr.aws/senzing/senzing-poc-server:3.0.1
-      Apt: public.ecr.aws/senzing/apt:1.0.8
-      BusyBox: public.ecr.aws/senzing/busybox:1.34.1
-      InitContainer: public.ecr.aws/senzing/init-container:1.7.9
+      ApiServer: senzing/senzing-api-server:2.7.5
+      BusyBox: public.ecr.aws/senzing/busybox:1.34.0
+      InitContainer: public.ecr.aws/init-container:1.7.6
+      Yum: senzing/yum:latest
     Run:
       ApiServer: Yes
     Stack:
@@ -381,6 +406,7 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-iam-role-lambda"
     Type: AWS::IAM::Role
+
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html
   # AWS Console: https://console.aws.amazon.com/iam/home?#/roles > Search for {stack} > {role} > inline policy
@@ -667,6 +693,7 @@ Resources:
           Fn::Sub: "${DatabaseStack}-ec2-VpcId"
     Type: AWS::EC2::SecurityGroup
 
+
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group-ingress.html
   # AWS Console: https://console.aws.amazon.com/vpc/home?#SecurityGroups: > Search for {stack}-ec2-security-group-alb-public > Inbound rules
 
@@ -853,6 +880,7 @@ Resources:
           Value: !Sub "${AWS::StackName}-sqs-output"
       VisibilityTimeout: 300
     Type: AWS::SQS::Queue
+
 
   # -- ECS Cluster --------------------------------------------------------------
 
@@ -1474,9 +1502,10 @@ Resources:
       Name: !Sub "${AWS::StackName}-server-keystore-password"
       SecretString: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
       Tags:
-        - Key: Name
+        -
+          Key: Name
           Value: !Sub "${AWS::StackName}-server-keystore-password"
-    Type: "AWS::SecretsManager::Secret"
+    Type: 'AWS::SecretsManager::Secret'
 
   SecretClientKeystorePassword:
     Properties:
@@ -1484,9 +1513,10 @@ Resources:
       Name: !Sub "${AWS::StackName}-client-keystore-password"
       SecretString: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
       Tags:
-        - Key: Name
+        -
+          Key: Name
           Value: !Sub "${AWS::StackName}-client-keystore-password"
-    Type: "AWS::SecretsManager::Secret"
+    Type: 'AWS::SecretsManager::Secret'
 
   # -- Load balancing -----------------------------------------------------------
 
@@ -1511,13 +1541,13 @@ Resources:
       Type: network
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
 
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
-  # AWS Console: https://console.aws.amazon.com/ec2/v2/home?#TargetGroups: > Search for {stack}
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
+# AWS Console: https://console.aws.amazon.com/ec2/v2/home?#TargetGroups: > Search for {stack}
 
   TargetGroupApiServerPublic:
     Condition: IfUsingApiServer
     DependsOn:
-      - NetworkLoadBalancerPublic
+     - NetworkLoadBalancerPublic
     Properties:
       HealthCheckIntervalSeconds: 30
       HealthyThresholdCount: 2
@@ -1566,29 +1596,40 @@ Resources:
               Value: "true"
             - Name: SENZING_API_SERVER_INIT_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
-            - Name: SENZING_API_SERVER_SECURE_PORT
+            -
+              Name: SENZING_API_SERVER_SECURE_PORT
               Value: "2443"
-            - Name: SENZING_API_SERVER_SKIP_ENGINE_PRIMING
-              Value: "true"
-            - Name: SENZING_API_SERVER_SKIP_STARTUP_PERF
-              Value: "true"
-            - Name: SENZING_API_SERVER_URL_BASE_PATH
+            -
+              Name: SENZING_API_SERVER_SKIP_ENGINE_PRIMING
+              Value: 'true'
+            -
+              Name: SENZING_API_SERVER_SKIP_STARTUP_PERF
+              Value: 'true'
+            -
+              Name: SENZING_API_SERVER_URL_BASE_PATH
               Value: /api
-            - Name: SENZING_API_SERVER_DEBUG
-              Value: "false"
-            - Name: SENZING_API_SERVER_VERBOSE
-              Value: "true"
-            - Name: SENZING_ENGINE_CONFIGURATION_JSON
+            -
+              Name: SENZING_API_SERVER_DEBUG
+              Value: 'false'
+            -
+              Name: SENZING_API_SERVER_VERBOSE
+              Value: 'true'
+            -
+              Name: SENZING_ENGINE_CONFIGURATION_JSON
               Value: !GetAtt SsmParameterSenzingEngineConfigurationJson.Value
             - Name: SENZING_SQS_INFO_QUEUE_URL
               Value: !Ref SqsOutput
-            - Name: SENZING_API_SERVER_KEY_STORE
-              Value: "/etc/opt/senzing/sz-api-server-store.p12"
-            - Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+            -
+              Name: SENZING_API_SERVER_KEY_STORE
+              Value: '/etc/opt/senzing/sz-api-server-store.p12'
+            -
+              Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
               Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
-            - Name: SENZING_API_SERVER_CLIENT_KEY_STORE
-              Value: "/etc/opt/senzing/my-client-trust-store.p12"
-            - Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE
+              Value: '/etc/opt/senzing/my-client-trust-store.p12'
+            -
+              Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
               Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
           Essential: true
           Image: !FindInMap [Constants, Images, ApiServer]
@@ -1635,7 +1676,7 @@ Resources:
             AuthorizationConfig: {}
             FilesystemId:
               Ref: EfsFileSystem
-            RootDirectory: /data/3.0.0
+            RootDirectory: /data/2.0.0
         - Name: senzing-etc-dir
           EFSVolumeConfiguration:
             AuthorizationConfig: {}
@@ -1665,7 +1706,7 @@ Resources:
             - "&&"
             - "mkdir"
             - "-p"
-            - "/efs/data/3.0.0"
+            - "/efs/data/2.0.0"
             - "&&"
             - "mkdir"
             - "/efs/etc"
@@ -1719,8 +1760,7 @@ Resources:
               Value: initialize-files
             - Name: SENZING_G2CONFIG_GTC
               Value: |
-                addDataSource CUSTOMERS
-                addDataSource REFERENCE
+                addDataSource CUSTOMER
                 addDataSource WATCHLIST
                 save
             - Name: SENZING_LICENSE_BASE64_ENCODED
@@ -1731,8 +1771,6 @@ Resources:
               Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
             - Name: SENZING_CLOUD
               Value: "aws"
-            - Name: SENZING_GENERATE_SSL_KEYSTORE
-              Value: "True"
             - Name: SENZING_STACK_NAME
               Value: !Ref AWS::StackName
             - Name: AWS_REGION
@@ -1776,7 +1814,7 @@ Resources:
             AuthorizationConfig: {}
             FilesystemId:
               Ref: EfsFileSystem
-            RootDirectory: /data/3.0.0
+            RootDirectory: /data/2.0.0
         - Name: senzing-etc-dir
           EFSVolumeConfiguration:
             AuthorizationConfig: {}
@@ -1805,7 +1843,7 @@ Resources:
             - Name: SENZING_ACCEPT_EULA
               Value: !Ref AcceptEula
           Essential: true
-          Image: !FindInMap [Constants, Images, Apt]
+          Image: !FindInMap [Constants, Images, Yum]
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -1820,7 +1858,7 @@ Resources:
               ContainerPath: /opt/senzing/g2
               ReadOnly: false
 
-          Name: apt
+          Name: yum
           Privileged: false
           ReadonlyRootFilesystem: false
           User: "0"
@@ -1857,14 +1895,15 @@ Resources:
   EcsServiceApiServer:
     Condition: IfUsingApiServer
     DependsOn:
-      - LambdaRunnerInitSenzing
+     - LambdaRunnerInitSenzing
     Properties:
       Cluster: !Ref EcsCluster
       DesiredCount: 1
       EnableECSManagedTags: true
       LaunchType: FARGATE
       LoadBalancers:
-        - ContainerPort: 2443
+        -
+          ContainerPort: 2443
           ContainerName: api-server
           TargetGroupArn: !Ref TargetGroupApiServerPublic
       NetworkConfiguration:

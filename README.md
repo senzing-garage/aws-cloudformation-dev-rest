@@ -95,6 +95,13 @@ can help evaluate costs.
     export CLIENT_STORE_P12_FILE=~/my-client-store.p12
     ```
 
+1. :pencil2: Define the region your stack is deployed in.
+   Example:
+
+    ```console
+    export AWS_REGION=us-east-1
+    ```
+
 1. Poplulate the `CLIENT_STORE_P12_FILE` by retrieving the client keystore from the secret manager.
    The AWS `secretsmanager:GetSecretValue` permission is required.
    Example:
@@ -102,6 +109,7 @@ can help evaluate costs.
     ```console
     aws secretsmanager get-secret-value \
         --secret-id ${SECRET_CLIENT_KEYSTORE_BASE64} \
+        --region ${AWS_REGION} \
     | jq --raw-output .SecretString \
     | base64 --decode \
     > ${CLIENT_STORE_P12_FILE}
@@ -115,6 +123,7 @@ can help evaluate costs.
     export SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE=$( \
         aws secretsmanager get-secret-value \
             --secret-id ${SECRET_CLIENT_KEYSTORE_PASSWORD} \
+            --region ${AWS_REGION} \
         | jq --raw-output .SecretString \
         )
     ```
@@ -207,6 +216,17 @@ Two example applications were created to illustrate how an application can authe
 
 1. For more Senzing HTTP REST APIs, please refer to the
    [swagger documentation](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/master/senzing-rest-api.yaml).
+
+## Clean-up
+
+Once you delete your stack, you'll want to clean-up a left over secret in the secrets manager.
+
+```console
+aws secretsmanager delete-secret \
+    --secret-id ${SECRET_CLIENT_KEYSTORE_BASE64} \
+    --force-delete-without-recovery \
+    --region ${AWS_REGION}
+```
 
 ## References
 
