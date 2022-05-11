@@ -8,14 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Thing 5
-- Thing 4
+-
 
-## [1.0.1] - yyyy-mm-dd
+## [0.0.2] - 2022-05-11
 
-### Added to 1.0.1
+### Changed in 0.0.2
 
-- Thing 3
+- update images to 3.0.0
+- update Senzing version to 3.0.0
+- migrated from yum to apt installer
+- update to 3.0.0 paths
+- updated readme.
 
 ### Fixed in 1.0.1
 
