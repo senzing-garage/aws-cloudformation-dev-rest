@@ -17,7 +17,7 @@ from requests_pkcs12 import get, post
 APP = Flask(__name__)
 
 # For more APIs, please refer to this swagger documentation
-# https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/master/senzing-rest-api.yaml
+# https://editor.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api/main/senzing-rest-api.yaml
 
 
 @APP.route("/")
