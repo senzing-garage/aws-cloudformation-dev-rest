@@ -17,7 +17,7 @@ Technical information on AWS Cloudformation parameters can be seen at
    This step is intentionally tricky to ensure that you make a conscious effort to accept the EULA.
 1. **Required:** Yes
 1. **Type:** String
-1. **Allowed values:** See [SENZING_ACCEPT_EULA](https://github.com/Senzing/knowledge-base/blob/master/lists/environment-variables.md#senzing_accept_eula).
+1. **Allowed values:** See [SENZING_ACCEPT_EULA](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_accept_eula).
 1. **Default:** None
 1. **Where used:**
     1. [cloudformation.yaml](https://github.com/Senzing/aws-cloudformation-dev-rest/blob/main/cloudformation.yaml)

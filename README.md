@@ -25,7 +25,7 @@ Using this stack, a developer could interact with Senzing's API Server programma
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. Install [git](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/install-git.md)
+1. Install [git](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-git.md)
 1. Install [aws](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-aws-cli.md)
 
 ## Deploy
@@ -161,7 +161,7 @@ Two example applications were created to illustrate how an application can authe
     ```
 
    then using the environment variables values just set,
-   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/clone-repository.md)
+   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md)
    to install the Git repository.
 
 1. Set the following environment variable as seen above:
@@ -215,7 +215,7 @@ Two example applications were created to illustrate how an application can authe
    - [http://127.0.0.1:5000/test-query](http://127.0.0.1:5000/test-query)
 
 1. For more Senzing HTTP REST APIs, please refer to the
-   [swagger documentation](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/master/senzing-rest-api.yaml).
+   [swagger documentation](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml).
 
 ## Clean-up
 
