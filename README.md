@@ -141,6 +141,8 @@ can help evaluate costs.
         --cert-type P12
     ```
 
+1. For developers that prefer to use postman to interact with the API server, follow these [instructions](docs/postman.md).
+
 ## Example applications
 
 Two example applications were created to illustrate how an application can authenticate with the Senzing's API Server.
