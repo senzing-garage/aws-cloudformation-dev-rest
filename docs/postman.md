@@ -1,8 +1,24 @@
 # Interact with Senzing API Server using Postman
 
-1. Import Senzing's REST API specification into postman by clicking on the "import" tab and inserting https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml into the url field.
+1. Create a workspace.
+    1. Postman > Workspaces > Create Workspace
+    1. In "Create Workspace":
+        1. **Name:** Senzing API
+1. In "Senzing API" workspace, import Senzing's REST API specification into postman.
+    1. Click the "Import" button.
+    1. Select the "Link" tab.
+    1. In "Enter a URL", enter `https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml`.
+    1. Click "Continue" button
 
-    ![api import](../assets/import_api.png)
+        ![api import](../assets/import_api.png)
+
+1. In "Import" dialog:
+    1. Click "Import" button.
+    1. In "Import complete", click "Close" button.
+1. In left-hand navigation bar, select "Collections".
+    1. Select "Senzing REST API"
+    1. Select "Variables" tab.
+    1. Modify variable "baseUrl" to be the value of the **UrlApiServer** seen in the
 
 1. Edit the Senzing REST API collection and update the baseUrl variable with the UrlApiServer output found in the dev-rest cloudformation stack.
 

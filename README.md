@@ -63,6 +63,13 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
+There are a couple of ways of interacting with the Senzing API server:
+
+1. [Command line](#command-line)
+1. [Postman](#postman)
+
+### Command line
+
 1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
    identify the Senzing API Server URL from the "Value".
    Example:
@@ -140,6 +147,8 @@ can help evaluate costs.
         --cert ${CLIENT_STORE_P12_FILE}:${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE} \
         --cert-type P12
     ```
+
+### Postman
 
 1. For developers that prefer to use postman to interact with the Senzing API Server, follow these [instructions](docs/postman.md).
 
