@@ -35,11 +35,11 @@
         1. **Host:** The **UrlApiServer** hostname.
            *Note:* Do not include `https://` nor `/api`.
         1. **PFX file:** The file specified in ${CLIENT_STORE_P12_FILE}
-        1. **Passphrase:** The value of ${SECRET_CLIENT_KEYSTORE_PASSWORD}
+        1. **Passphrase:** The value of ${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE}.
            Example:
 
             ```console
-            echo ${SECRET_CLIENT_KEYSTORE_PASSWORD}
+            echo ${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE}
             ```
 
     ![upload certificate](../assets/certificate.png)
