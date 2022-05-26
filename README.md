@@ -72,8 +72,9 @@ can help evaluate costs.
 
 ### Generate credentials
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the Senzing API Server URL from the "Value".
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **UrlApiServer** key's "Value" column,
+   identify the Senzing API Server URL.
    Example:
 
     ```console
@@ -84,12 +85,21 @@ can help evaluate costs.
 
    ![api url](assets/cloudformation_output_api.png)
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the client keystore and password secret name.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystoreBase64Output** key's "Value" column,
+   identify the client keystore.
    Example:
 
     ```console
     export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-client-keystore-base64
+    ```
+
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystorePasswordOutput** key's "Value" column,
+   identify the client keystore and password secret name.
+   Example:
+
+    ```console
     export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-client-keystore-password
     ```
 
