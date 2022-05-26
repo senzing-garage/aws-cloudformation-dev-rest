@@ -28,6 +28,7 @@
     1. For the variable "baseUrl", modify the "CURRENT VALUE"
        to be the value of the **UrlApiServer** seen in the
        "Outputs" tab of the AWS Senzing Dev-Rest Cloudformation.
+       It is also the value of ${SENZING_API_SERVER_URL}.
 
         ![update variable](../assets/change_var.png)
 
@@ -70,6 +71,7 @@
     1. In the drop-down menu, choose "Settings".
     1. In the "Settings" dialog box, choose the "General" tab.
     1. Turn "SSL certificate verification" off.
+    1. Close the "Settings" dialog box.
 1. Send a request.
     1. In left-hand navigation, select "Senzing REST API" collection.
     1. Click on the request that starts with "Gets a heartbeat from the serv...".
