@@ -24,7 +24,15 @@
 
         ![update variable](../assets/change_var.png)
 
-1. Import the client certificate by clicking on "Settings" and followed by "Certificates". Enter the UrlApiServer domain into the "Host" field, upload the client keystore under PFX file and enter in the keystore password.
+1. Import the client certificate.
+    1. In the top tool bar, click on the "Settings" (gear) icon.
+    1. In the drop-down menu, choose "Settings"
+    1. In the "Settings" dialog box, choose the "Certificates" tab.
+    1. Click the "Add Certificate" link.
+    1. In "Settings" dialog box:
+        1. **Host:** The UrlApiServer domain
+        1. **PFX file:** The file specified in ${CLIENT_STORE_P12_FILE}
+        1. **Passphrase:** The value of ${SECRET_CLIENT_KEYSTORE_PASSWORD}
 
     ![upload certificate](../assets/certificate.png)
 

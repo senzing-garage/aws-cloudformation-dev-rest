@@ -19,7 +19,14 @@ Using this stack, a developer could interact with Senzing's API Server programma
 1. [Pre-requisites](#pre-requisites)
 1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
+    1. [Generate credentials](#generate-credentials)
+    1. [Using curl](#using-curl)
+    1. [Using Postman](#using-postman)
 1. [Example applications](#example-applications)
+    1. [Example application prerequisites](#example-application-prerequisites)
+    1. [CLI application](#cli-application)
+    1. [Web application](#web-application)
+1. [Clean-up](#clean-up)
 1. [References](#references)
 
 ## Pre-requisites
@@ -63,12 +70,7 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
-There are a couple of ways of interacting with the Senzing API server:
-
-1. [Command line](#command-line)
-1. [Postman](#postman)
-
-### Command line
+### Generate credentials
 
 1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
    identify the Senzing API Server URL from the "Value".
@@ -135,6 +137,8 @@ There are a couple of ways of interacting with the Senzing API server:
         )
     ```
 
+### Using curl
+
 1. To interact directly with the Senzing API Server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the Senzing API Server.
@@ -148,7 +152,7 @@ There are a couple of ways of interacting with the Senzing API server:
         --cert-type P12
     ```
 
-### Postman
+### Using Postman
 
 1. For developers that prefer to use postman to interact with the Senzing API Server, follow these [instructions](docs/postman.md).
 
