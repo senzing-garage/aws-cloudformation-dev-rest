@@ -26,6 +26,8 @@
 
         ![update variable](../assets/change_var.png)
 
+    1. In the upper-right, click the "Save" icon.
+
 1. Import the client certificate.
     1. In the top tool bar, click on the "Settings" (gear) icon.
     1. In the drop-down menu, choose "Settings".
@@ -47,18 +49,13 @@
         1. Click "Add" button.
         1. Close "Settings" dialog box.
 1. Disable SSL certificate verification.
+    1. In the top tool bar, click on the "Settings" (gear) icon.
+    1. In the drop-down menu, choose "Settings".
+    1. In the "Settings" dialog box, choose the "General" tab.
+    1. Turn "SSL certificate verification" off.
+1. Send a request.
     1. In left-hand navigation, select "Senzing REST API" collection
     1. Click on the request that starts with "Gets a heartbeat from the serv..."
-    1. In the tabbed-pane tool bar, click on "Settings".
-       *Note:* this is **not** the Settings (gear) icon.
-    1. Turn off "Enable SSL certificate verification".
-
-    ![ssl disable](../assets/ssl_disable.png)
-
-1. Send a request.
     1. In the upper-right, click on the "Send" button.
-    1. send and get a heartbeat response from the Senzing API Server
 
     ![postman success](../assets/result.png)
-
-
