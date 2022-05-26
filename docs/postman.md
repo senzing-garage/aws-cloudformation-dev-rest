@@ -8,7 +8,7 @@
 1. Import Senzing's REST API specification into Postman:
     1. Select "Senzing REST API" workspace.
         1. Postman > Workspaces > Senzing REST API
-    1. Click the "Import" button.
+    1. In upper-left, click the "Import" button.
     1. Select the "Link" tab.
     1. In "Enter a URL", enter `https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml`.
 
@@ -20,7 +20,7 @@
         1. In "Import complete", click "Close" button.
 1. Update **baseUrl** value.
     1. In left-hand navigation bar, select "Collections".
-    1. Select "Senzing REST API"
+    1. Select "Senzing REST API".
     1. Select "Variables" tab.
     1. For the variable "baseUrl", modify the "CURRENT VALUE"
        to be the value of the **UrlApiServer** seen in the
