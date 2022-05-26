@@ -12,9 +12,9 @@
     1. In "Import" dialog box, select the "Link" tab.
     1. In "Enter a URL", enter the following:
 
-     ```console
-     https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml
-     ```
+        ```console
+        https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml
+        ```
 
         ![api import](../assets/import_api.png)
 
