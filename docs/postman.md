@@ -42,11 +42,16 @@
             echo ${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE}
             ```
 
+        ![upload certificate](../assets/certificate.png)
+
         1. Click "Add" button.
-
-    ![upload certificate](../assets/certificate.png)
-
-1. Go back to the Senzing REST API collection, click on the request that starts with "Gets a heartbeat", click on the settings and turn off "Enable SSL certificate verification"
+        1. Close "Settings" dialog box.
+1. Disable SSL certificate verification.
+    1. In left-hand navigation, select "Senzing REST API" collection
+    1. Click on the request that starts with "Gets a heartbeat from the serv..."
+    1. In the tabbed-pane tool bar, click on "Settings".
+       *Note:* this is **not** the Settings (gear) icon.
+    1. Turn off "Enable SSL certificate verification".
 
     ![ssl disable](../assets/ssl_disable.png)
 
