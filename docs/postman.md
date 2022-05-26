@@ -15,7 +15,8 @@
 1. In "Import" dialog:
     1. Click "Import" button.
     1. In "Import complete", click "Close" button.
-1. In left-hand navigation bar, select "Collections".
+1. Update **baseUrl** value:
+    1. In left-hand navigation bar, select "Collections".
     1. Select "Senzing REST API"
     1. Select "Variables" tab.
     1. For the variable "baseUrl", modify the "CURRENT VALUE"
