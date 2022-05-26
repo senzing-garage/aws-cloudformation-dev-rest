@@ -9,10 +9,10 @@
     1. Click the "Import" button.
     1. Select the "Link" tab.
     1. In "Enter a URL", enter `https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml`.
-    1. Click "Continue" button
 
         ![api import](../assets/import_api.png)
 
+    1. Click "Continue" button.
     1. In "Import" dialog:
         1. Click "Import" button.
         1. In "Import complete", click "Close" button.
@@ -54,8 +54,8 @@
     1. In the "Settings" dialog box, choose the "General" tab.
     1. Turn "SSL certificate verification" off.
 1. Send a request.
-    1. In left-hand navigation, select "Senzing REST API" collection
-    1. Click on the request that starts with "Gets a heartbeat from the serv..."
+    1. In left-hand navigation, select "Senzing REST API" collection.
+    1. Click on the request that starts with "Gets a heartbeat from the serv...".
     1. In the upper-right, click on the "Send" button.
 
     ![postman success](../assets/result.png)
