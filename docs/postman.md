@@ -55,7 +55,9 @@
 
     ![ssl disable](../assets/ssl_disable.png)
 
-1. Click on send and get a heartbeat response from the Senzing API Server
+1. Send a request.
+    1. In the upper-right, click on the "Send" button.
+    1. send and get a heartbeat response from the Senzing API Server
 
     ![postman success](../assets/result.png)
 
