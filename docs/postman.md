@@ -22,7 +22,7 @@
        to be the value of the **UrlApiServer** seen in the
        "Outputs" tab of the AWS Senzing Dev-Rest Cloudformation.
 
-    ![update variable](../assets/change_var.png)
+        ![update variable](../assets/change_var.png)
 
 1. Import the client certificate by clicking on "Settings" and followed by "Certificates". Enter the UrlApiServer domain into the "Host" field, upload the client keystore under PFX file and enter in the keystore password.
 
