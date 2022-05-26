@@ -12,9 +12,9 @@
 
         ![api import](../assets/import_api.png)
 
-1. In "Import" dialog:
-    1. Click "Import" button.
-    1. In "Import complete", click "Close" button.
+    1. In "Import" dialog:
+        1. Click "Import" button.
+        1. In "Import complete", click "Close" button.
 1. Update **baseUrl** value:
     1. In left-hand navigation bar, select "Collections".
     1. Select "Senzing REST API"
