@@ -1,6 +1,6 @@
 # Interact with Senzing API Server using Postman
 
-1. Create a workspace:
+1. Create a workspace.
     1. Postman > Workspaces > Create Workspace
     1. In "Create Workspace":
         1. **Name:** Senzing API
@@ -16,7 +16,7 @@
     1. In "Import" dialog:
         1. Click "Import" button.
         1. In "Import complete", click "Close" button.
-1. Update **baseUrl** value:
+1. Update **baseUrl** value.
     1. In left-hand navigation bar, select "Collections".
     1. Select "Senzing REST API"
     1. Select "Variables" tab.
@@ -34,9 +34,21 @@
     1. In the "Settings" dialog box, choose the "Certificates" tab.
     1. Click the "Add Certificate" link.
     1. In "Settings" dialog box:
-        1. **Host:** The **UrlApiServer** hostname.
+        1. **Host:** The hostname of ${SENZING_API_SERVER_URL}.
            *Note:* Do not include `https://` nor `/api`.
-        1. **PFX file:** The file specified in ${CLIENT_STORE_P12_FILE}
+           Example:
+
+            ```console
+            echo ${SENZING_API_SERVER_URL} | sed -e "s|^https://||" -e "s|/api$||"
+            ```
+
+        1. **PFX file:** The file specified in ${CLIENT_STORE_P12_FILE}.
+           Example:
+
+            ```console
+            echo ${CLIENT_STORE_P12_FILE}
+            ```
+
         1. **Passphrase:** The value of ${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE}.
            Example:
 
