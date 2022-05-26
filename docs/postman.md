@@ -18,9 +18,9 @@
 1. In left-hand navigation bar, select "Collections".
     1. Select "Senzing REST API"
     1. Select "Variables" tab.
-    1. Modify variable "baseUrl" to be the value of the **UrlApiServer** seen in the
-
-1. Edit the Senzing REST API collection and update the baseUrl variable with the UrlApiServer output found in the dev-rest cloudformation stack.
+    1. For the variable "baseUrl", modify the "CURRENT VALUE"
+       to be the value of the **UrlApiServer** seen in the
+       "Outputs" tab of the AWS Senzing Dev-Rest Cloudformation.
 
     ![update variable](../assets/change_var.png)
 
