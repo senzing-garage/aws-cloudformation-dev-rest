@@ -4,6 +4,7 @@
     1. Postman > Workspaces > Create Workspace
     1. In "Create Workspace":
         1. **Name:** Senzing REST API
+    1. Click "Create Workspace" button.
 1. Import Senzing's REST API specification into Postman:
     1. Select "Senzing REST API" workspace.
         1. Postman > Workspaces > Senzing REST API
