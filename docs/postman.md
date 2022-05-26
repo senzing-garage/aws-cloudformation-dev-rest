@@ -32,9 +32,15 @@
     1. In the "Settings" dialog box, choose the "Certificates" tab.
     1. Click the "Add Certificate" link.
     1. In "Settings" dialog box:
-        1. **Host:** The UrlApiServer domain
+        1. **Host:** The **UrlApiServer** hostname.
+           *Note:* Do not include `https://` nor `/api`.
         1. **PFX file:** The file specified in ${CLIENT_STORE_P12_FILE}
         1. **Passphrase:** The value of ${SECRET_CLIENT_KEYSTORE_PASSWORD}
+           Example:
+
+            ```console
+            echo ${SECRET_CLIENT_KEYSTORE_PASSWORD}
+            ```
 
     ![upload certificate](../assets/certificate.png)
 
