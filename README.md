@@ -34,7 +34,7 @@ Using this stack, a developer could interact with Senzing's API Server programma
 With appropriate permissions, the
 [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
 can help evaluate costs.
-1. Download the appropriate [AWS Cloudformation template example](https://raw.githubusercontent.com/Senzing/aws-cloudformation-database-cluster/main/cloudformation.yaml) from this repository to your local device.  Example:
+1. Download the appropriate [AWS Cloudformation template example](https://raw.githubusercontent.com/Senzing/aws-cloudformation-dev-rest/main/cloudformation.yaml) from this repository to your local device.  Example:
     ```
     curl -X GET \
         --output ~/dev-rest-cloudformation.yaml \
