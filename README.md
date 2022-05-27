@@ -30,11 +30,17 @@ Using this stack, a developer could interact with Senzing's API Server programma
 
 ## Deploy
 
-:warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
+1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
 With appropriate permissions, the
 [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
 can help evaluate costs.
-
+1. Download the appropriate [AWS Cloudformation template example](https://raw.githubusercontent.com/Senzing/aws-cloudformation-database-cluster/main/cloudformation.yaml) from this repository to your local device.  Example:
+    ```
+    curl -X GET \
+        --output ~/dev-rest-cloudformation.yaml \
+        https://raw.githubusercontent.com/Senzing/aws-cloudformation-database-cluster/main/cloudformation.yaml
+    ```
+1. It is highly suggested to take a look at the AWS Cloudformation Template that has been downloaded.  This template is an example that deploys and configures a number of services and facilities.  While it is a working example, each business may have different requirements and their account may not have all the privleges required to deploy it.  Furthermore, the examples change over time and these files are meant to be treated as code files so they should be put under source control.
 1. In [AWS Cloudformation with dev-rest template](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sz-dev&templateURL=https://s3.amazonaws.com/public-read-access/aws-cloudformation-dev-rest/cloudformation.yaml)
     1. At lower-right, click on "Next" button.
     1. In **Specify stack details**
