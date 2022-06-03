@@ -19,7 +19,14 @@ Using this stack, a developer could interact with Senzing's API Server programma
 1. [Pre-requisites](#pre-requisites)
 1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
+    1. [Generate credentials](#generate-credentials)
+    1. [Using curl](#using-curl)
+    1. [Using Postman](#using-postman)
 1. [Example applications](#example-applications)
+    1. [Example application prerequisites](#example-application-prerequisites)
+    1. [CLI application](#cli-application)
+    1. [Web application](#web-application)
+1. [Clean-up](#clean-up)
 1. [References](#references)
 
 ## Pre-requisites
@@ -30,11 +37,17 @@ Using this stack, a developer could interact with Senzing's API Server programma
 
 ## Deploy
 
-:warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
+1. :warning: **Warning:** This Cloudformation deployment will accrue AWS costs.
 With appropriate permissions, the
 [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
 can help evaluate costs.
-
+1. Download the appropriate [AWS Cloudformation template example](https://raw.githubusercontent.com/Senzing/aws-cloudformation-dev-rest/main/cloudformation.yaml) from this repository to your local device.  Example:
+    ```
+    curl -X GET \
+        --output ~/dev-rest-cloudformation.yaml \
+        https://raw.githubusercontent.com/Senzing/aws-cloudformation-database-cluster/main/cloudformation.yaml
+    ```
+1. It is highly suggested to take a look at the AWS Cloudformation Template that has been downloaded.  This template is an example that deploys and configures a number of services and facilities.  While it is a working example, each business may have different requirements and their account may not have all the privleges required to deploy it.  Furthermore, the examples change over time and these files are meant to be treated as code files so they should be put under source control.
 1. In [AWS Cloudformation with dev-rest template](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sz-dev&templateURL=https://s3.amazonaws.com/public-read-access/aws-cloudformation-dev-rest/cloudformation.yaml)
     1. At lower-right, click on "Next" button.
     1. In **Specify stack details**
@@ -63,8 +76,11 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the Senzing API Server URL from the "Value".
+### Generate credentials
+
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **UrlApiServer** key's "Value" column,
+   identify the Senzing API Server URL.
    Example:
 
     ```console
@@ -75,12 +91,21 @@ can help evaluate costs.
 
    ![api url](assets/cloudformation_output_api.png)
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the client keystore and password secret name.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystoreBase64Output** key's "Value" column,
+   identify the client keystore.
    Example:
 
     ```console
     export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-client-keystore-base64
+    ```
+
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystorePasswordOutput** key's "Value" column,
+   identify the client keystore and password secret name.
+   Example:
+
+    ```console
     export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-client-keystore-password
     ```
 
@@ -128,6 +153,8 @@ can help evaluate costs.
         )
     ```
 
+### Using curl
+
 1. To interact directly with the Senzing API Server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the Senzing API Server.
@@ -140,6 +167,10 @@ can help evaluate costs.
         --cert ${CLIENT_STORE_P12_FILE}:${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE} \
         --cert-type P12
     ```
+
+### Using Postman
+
+1. For developers that prefer to use postman to interact with the Senzing API Server, follow these [instructions](docs/postman.md).
 
 ## Example applications
 
