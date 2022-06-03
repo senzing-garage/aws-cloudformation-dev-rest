@@ -19,7 +19,14 @@ Using this stack, a developer could interact with Senzing's API Server programma
 1. [Pre-requisites](#pre-requisites)
 1. [Deploy](#deploy)
 1. [Interact with Senzing API Server using SSL client authentication](#interact-with-senzing-api-server-using-ssl-client-authentication)
+    1. [Generate credentials](#generate-credentials)
+    1. [Using curl](#using-curl)
+    1. [Using Postman](#using-postman)
 1. [Example applications](#example-applications)
+    1. [Example application prerequisites](#example-application-prerequisites)
+    1. [CLI application](#cli-application)
+    1. [Web application](#web-application)
+1. [Clean-up](#clean-up)
 1. [References](#references)
 
 ## Pre-requisites
@@ -69,8 +76,11 @@ can help evaluate costs.
 
 ## Interact with Senzing API Server using SSL client authentication
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the Senzing API Server URL from the "Value".
+### Generate credentials
+
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **UrlApiServer** key's "Value" column,
+   identify the Senzing API Server URL.
    Example:
 
     ```console
@@ -81,12 +91,21 @@ can help evaluate costs.
 
    ![api url](assets/cloudformation_output_api.png)
 
-1. :pencil2: From the Cloudformation Stack details "Outputs" tab, "Value" column,
-   identify the client keystore and password secret name.
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystoreBase64Output** key's "Value" column,
+   identify the client keystore.
    Example:
 
     ```console
     export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-client-keystore-base64
+    ```
+
+1. :pencil2: From the Cloudformation Stack details "Outputs" tab,
+   the **SecretClientKeystorePasswordOutput** key's "Value" column,
+   identify the client keystore and password secret name.
+   Example:
+
+    ```console
     export SECRET_CLIENT_KEYSTORE_PASSWORD=xxxxxxxx-client-keystore-password
     ```
 
@@ -134,6 +153,8 @@ can help evaluate costs.
         )
     ```
 
+### Using curl
+
 1. To interact directly with the Senzing API Server,
    use the `--cert` and `--cert-type` options of
    `curl` to authenticate to the Senzing API Server.
@@ -146,6 +167,8 @@ can help evaluate costs.
         --cert ${CLIENT_STORE_P12_FILE}:${SECRET_CLIENT_KEYSTORE_PASSWORD_VALUE} \
         --cert-type P12
     ```
+
+### Using Postman
 
 1. For developers that prefer to use postman to interact with the Senzing API Server, follow these [instructions](docs/postman.md).
 
