@@ -66,12 +66,18 @@
 
         1. Click "Add" button.
         1. Close "Settings" dialog box.
-1. Disable SSL certificate verification.
+1. Disable SSL certificate verification (account-level).
     1. In the top tool bar, click on the "Settings" (gear) icon.
     1. In the drop-down menu, choose "Settings".
     1. In the "Settings" dialog box, choose the "General" tab.
     1. Turn "SSL certificate verification" off.
     1. Close the "Settings" dialog box.
+1. Disable SSL certificate verification (request-level). Skip you followed the previous step.
+    1. In left-hand navigation, select "Senzing REST API" collection.
+    1. In the tabs, choose "Settings".
+    1. Turn "SSL certificate verification" off.
+    1. Close the "Settings" dialog box.
+    ![ssl disable](../assets/ssl_disable.png)
 1. Send a request.
     1. In left-hand navigation, select "Senzing REST API" collection.
     1. Click on the request that starts with "Gets a heartbeat from the serv...".
