@@ -8,8 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- added image versions to stack output
 -
+
+## [0.0.3] - 2022-06-10
+
+### Changed in 0.0.2
+
+- added image versions to stack output
+- added Senzing 3.1.0
+- updated docker images
 
 ## [0.0.2] - 2022-05-11
 

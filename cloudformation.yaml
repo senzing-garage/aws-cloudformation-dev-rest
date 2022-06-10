@@ -7,7 +7,7 @@ AWSTemplateFormatVersion: 2010-09-09
 #     aws cloudformation validate-template: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cloudformation/validate-template.html
 
 Description: >-
-  Senzing aws-cloudformation-dev-rest: 0.0.2
+  Senzing aws-cloudformation-dev-rest: 0.0.3
   For more information see
   https://github.com/Senzing/aws-cloudformation-dev-rest
 
@@ -105,7 +105,8 @@ Parameters:
   SenzingVersion:
     AllowedValues:
       - "3.0.0"
-    Default: "3.0.0"
+      - "3.1.0"
+    Default: "3.1.0"
     Description: "Help: https://hub.senzing.com/aws-cloudformation-ecs-senzing-stack-basic/#senzingversion"
     Type: String
 
@@ -159,13 +160,15 @@ Mappings:
   SenzingVersionMap:
     "3.0.0":
       value: "senzingapi=3.0.0-22119"
+    "3.1.0":
+      value: "senzingapi=3.1.0-22152"
 
   Constants:
     Images:
-      ApiServer: public.ecr.aws/senzing/senzing-poc-server:3.0.1
-      Apt: public.ecr.aws/senzing/apt:1.0.8
+      ApiServer: public.ecr.aws/senzing/senzing-poc-server:3.0.2
+      Apt: public.ecr.aws/senzing/apt:1.0.9
       BusyBox: public.ecr.aws/senzing/busybox:1.34.1
-      InitContainer: public.ecr.aws/senzing/init-container:1.7.9
+      InitContainer: public.ecr.aws/senzing/init-container:1.7.11
     Run:
       ApiServer: Yes
     Stack:
