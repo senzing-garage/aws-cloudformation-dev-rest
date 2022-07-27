@@ -199,62 +199,7 @@ Resources:
     Properties:
       Name: !Sub "${AWS::StackName}-ssm-parameter-senzing-engine-configuration-json"
       Type: String
-      Value: !Sub
-        - >-
-          {
-              "PIPELINE": {
-                  "CONFIGPATH": "/etc/opt/senzing",
-                  "RESOURCEPATH": "/opt/senzing/g2/resources",
-                  "SUPPORTPATH": "/opt/senzing/data"
-              },
-              "SQL": {
-                  "BACKEND": "HYBRID",
-                  "CONNECTION":"postgresql://${DatabaseUsername}:${DatabasePassword}@${DatabaseHostCore}:${DatabasePortCore}:${DatabaseName}"
-              },
-              "C1": {
-                  "CLUSTER_SIZE": "1",
-                  "DB_1": "postgresql://${DatabaseUsername}:${DatabasePassword}@${DatabaseHostRes}:${DatabasePortRes}:${DatabaseName}"
-              },
-              "C2": {
-                  "CLUSTER_SIZE": "1",
-                  "DB_1": "postgresql://${DatabaseUsername}:${DatabasePassword}@${DatabaseHostLibfeat}:${DatabasePortLibfeat}:${DatabaseName}"
-              },
-              "HYBRID": {
-                  "LIB_FEAT": "C2",
-                  "LIB_FEAT_HKEY": "C2",
-                  "RES_FEAT": "C1",
-                  "RES_FEAT_EKEY": "C1",
-                  "RES_FEAT_LKEY": "C1",
-                  "RES_FEAT_STAT": "C1"
-              }
-          }
-        - DatabaseHostCore:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-host-core"
-          DatabaseHostLibfeat:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-host-libfeat"
-          DatabaseHostRes:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-host-res"
-          DatabaseName:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-name"
-          DatabasePassword:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-password"
-          DatabasePortCore:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-port-core"
-          DatabasePortLibfeat:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-port-libfeat"
-          DatabasePortRes:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-port-res"
-          DatabaseUsername:
-            Fn::ImportValue:
-              Fn::Sub: "${DatabaseStack}-database-username"
+      Value: !GetAtt LambdaRunnerSenzingEngineConfigurationJson.ConfigJSON
     Type: AWS::SSM::Parameter
 
   # -- Iam -----------------------------------------------------------------
@@ -524,6 +469,11 @@ Resources:
   LogsLogGroupLambdaRunTaskAndWait:
     Properties:
       LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-lambda-run-task-and-wait"
+    Type: AWS::Logs::LogGroup
+
+  LogsLogGroupLambdaSenzingEngineConfigurationJson:
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-lambda-senzing-engine-configuration-json"
     Type: AWS::Logs::LogGroup
 
   LogsLogGroupLambdaStringToLower:
@@ -1088,6 +1038,99 @@ Resources:
       Timeout: 600
     Type: AWS::Lambda::Function
 
+  LambdaFunctionSenzingEngineConfigurationJson:
+    Properties:
+      Code:
+        ZipFile: |
+          #!/usr/bin/env python3
+
+          import cfnresponse
+          import json
+          import logging
+          import traceback
+
+          logger = logging.getLogger()
+          logger.setLevel(logging.INFO)
+
+          def handler(event, context):
+              result = cfnresponse.SUCCESS
+              response_data = {}
+              try:
+                  logger.info("Event: {0}".format(json.dumps(event)))
+                  if event['RequestType'] in ['Create', 'Update']:
+                      properties = event.get('ResourceProperties', {})
+                      database_name = properties.get('DatabaseName', '')
+                      database_user_name = properties.get('DatabaseUsername', '')
+                      database_password = properties.get('DatabasePassword', '')
+                      database_host_core = properties.get('DatabaseHostCore', '')
+                      database_port_core = properties.get('DatabasePortCore', '')
+                      database_host_res = properties.get('DatabaseHostRes', '')
+                      database_port_res = properties.get('DatabasePortRes', '')
+                      database_host_libfeat = properties.get('DatabaseHostLibfeat', '')
+                      database_port_libfeat = properties.get('DatabasePortLibfeat', '')
+                      db_config = 'Multiple'
+                      if database_host_core == database_host_res == database_host_libfeat:
+                          db_config = 'Single'
+                      logger.info(f"db_config={db_config}")
+                      if db_config == 'Single':
+                          response_data["ConfigJSON"] = (
+                                '{'
+                                '    "PIPELINE": {'
+                                '        "CONFIGPATH": "/etc/opt/senzing",'
+                                '        "RESOURCEPATH": "/opt/senzing/g2/resources",'
+                                '        "SUPPORTPATH": "/opt/senzing/data"'
+                                '    },'
+                                '    "SQL": {'
+                                '        "BACKEND": "SQL",'
+                                f'        "CONNECTION":"postgresql://{database_user_name}:{database_password}@{database_host_core}:{database_port_core}:{database_name}"'
+                                '    }'
+                                '}')
+                      else:
+                          response_data["ConfigJSON"] = (
+                                '{'
+                                '    "PIPELINE": {'
+                                '        "CONFIGPATH": "/etc/opt/senzing",'
+                                '        "RESOURCEPATH": "/opt/senzing/g2/resources",'
+                                '        "SUPPORTPATH": "/opt/senzing/data"'
+                                '    },'
+                                '    "SQL": {'
+                                '        "BACKEND": "HYBRID",'
+                                f'        "CONNECTION":"postgresql://{database_user_name}:{database_password}@{database_host_core}:{database_port_core}:{database_name}"'
+                                '    },'
+                                '    "C1": {'
+                                '        "CLUSTER_SIZE": "1",'
+                                f'        "DB_1": "postgresql://{database_user_name}:{database_password}@{database_host_res}:{database_port_res}:{database_name}"'
+                                '    },'
+                                '    "C2": {'
+                                '        "CLUSTER_SIZE": "1",'
+                                f'        "DB_1": "postgresql://{database_user_name}:{database_password}@{database_host_libfeat}:{database_port_libfeat}:{database_name}"'
+                                '    },'
+                                '    "HYBRID": {'
+                                '        "LIB_FEAT": "C2",'
+                                '        "LIB_FEAT_HKEY": "C2",'
+                                '        "RES_FEAT": "C1",'
+                                '        "RES_FEAT_EKEY": "C1",'
+                                '        "RES_FEAT_LKEY": "C1",'
+                                '        "RES_FEAT_STAT": "C1"'
+                                '    }'
+                                '}')
+              except Exception as e:
+                  logger.error(e)
+                  traceback.print_exc()
+                  result = cfnresponse.FAILED
+              finally:
+                  cfnresponse.send(event, context, result, response_data)
+
+      Description: Constructs the Senzing Engine configuration JSON.
+      FunctionName: !Sub "${AWS::StackName}-lambda-senzing-engine-configuration-json"
+      Handler: index.handler
+      Role: !GetAtt IamRoleLambda.Arn
+      Runtime: python3.8
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-senzing-engine-configuration-json"
+    Type: AWS::Lambda::Function
+
   LambdaFunctionStringToLower:
     Properties:
       Code:
@@ -1413,6 +1456,41 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-lambda-runner-init-senzing"
     Type: Custom::LambdaRunnerInitSenzing
+
+  LambdaRunnerSenzingEngineConfigurationJson:
+    Properties:
+      DatabaseHostCore:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-host-core"
+      DatabaseHostLibfeat:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-host-libfeat"
+      DatabaseHostRes:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-host-res"
+      DatabaseName:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-name"
+      DatabasePassword:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-password"
+      DatabasePortCore:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-port-core"
+      DatabasePortLibfeat:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-port-libfeat"
+      DatabasePortRes:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-port-res"
+      DatabaseUsername:
+        Fn::ImportValue:
+          Fn::Sub: "${DatabaseStack}-database-username"
+      ServiceToken: !GetAtt LambdaFunctionSenzingEngineConfigurationJson.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-senzing-engine-configuration-json"
+    Type: Custom::LambdaRunnerSenzingEngineConfigurationJson
 
   LambdaRunnerStackNameAsLower:
     Properties:
