@@ -10,9 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## [0.0.4] - 2022-07-29
+
+### Changed in 0.0.4
+
+- updated to support different engine config depending on database config
+
 ## [0.0.3] - 2022-06-10
 
-### Changed in 0.0.2
+### Changed in 0.0.3
 
 - added image versions to stack output
 - added Senzing 3.1.0
