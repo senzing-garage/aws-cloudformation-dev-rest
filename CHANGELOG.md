@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
--
+- updated readme to point to SwaggerUI
 
 ## [0.0.4] - 2022-07-29
 

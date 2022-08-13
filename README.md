@@ -171,6 +171,7 @@ can help evaluate costs.
 ### Using Postman
 
 1. For developers that prefer to use postman to interact with the Senzing API Server, follow these [instructions](docs/postman.md).
+1. The REST API can also be explored by using [SwaggerUI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml).
 
 ## Example applications
 
