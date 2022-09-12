@@ -169,6 +169,7 @@ Mappings:
       Apt: public.ecr.aws/senzing/apt:1.0.9
       BusyBox: public.ecr.aws/senzing/busybox:1.34.1
       InitContainer: public.ecr.aws/senzing/init-container:1.7.11
+      KeystoreGenerator: senzing/keystore-generator:latest
     Run:
       ApiServer: Yes
     Stack:
@@ -1456,6 +1457,37 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-lambda-runner-init-senzing"
     Type: Custom::LambdaRunnerInitSenzing
+  
+  LambdaRunnerGenerateKeystore:
+    DependsOn:
+      - LambdaRunnerInstallSenzing
+    Properties:
+      ClusterId: !Ref EcsCluster
+      RunTaskParameters:
+        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecs.html#ECS.Client.run_task
+        cluster: !Ref EcsCluster
+        count: 1
+        launchType: FARGATE
+        networkConfiguration:
+          awsvpcConfiguration:
+            assignPublicIp: DISABLED
+            securityGroups:
+              - !Ref Ec2SecurityGroupLambdaRunner
+            subnets:
+              - Fn::ImportValue:
+                  Fn::Sub: "${DatabaseStack}-subnet-private-1"
+              - Fn::ImportValue:
+                  Fn::Sub: "${DatabaseStack}-subnet-private-2"
+        platformVersion: 1.4.0
+        tags:
+          - key: Name
+            value: !Sub "${AWS::StackName}-lambda-runner-generate-keystore-run-task-parameters"
+        taskDefinition: !Ref EcsTaskDefinitionGenerateKeystore
+      ServiceToken: !GetAtt LambdaFunctionRunTaskAndWait.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lambda-runner-generate-keystore"
+    Type: Custom::LambdaRunnerGenerateKeystore
 
   LambdaRunnerSenzingEngineConfigurationJson:
     Properties:
@@ -1788,6 +1820,58 @@ Resources:
             FilesystemId:
               Ref: EfsFileSystem
             RootDirectory: "/"
+    Type: AWS::ECS::TaskDefinition
+  
+  EcsTaskDefinitionGenerateKeystore:
+    Properties:
+      ContainerDefinitions:
+        - Environment:
+            - Name: SENZING_API_SERVER_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerServerKeystorePassword.RandomPassword
+            - Name: SENZING_API_SERVER_CLIENT_KEY_STORE_PASSWORD
+              Value: !GetAtt LambdaRunnerClientKeystorePassword.RandomPassword
+            - Name: SENZING_SUBCOMMAND
+              Value: "aws"
+            - Name: SENZING_STACK_NAME
+              Value: !Ref AWS::StackName
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
+            - Name: SENZING_ETC_DIR
+              Value: /etc/opt/senzing
+          Essential: true
+          Image: !FindInMap [Constants, Images, KeystoreGenerator]
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogsLogGroupMain
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: job
+          MountPoints:
+            - SourceVolume: senzing-etc-dir
+              ContainerPath: /etc/opt/senzing
+              ReadOnly: false
+          Name: generateKeystore
+          Privileged: false
+          ReadonlyRootFilesystem: false
+          User: "0"
+      Cpu: "512"
+      ExecutionRoleArn: !GetAtt IamRoleInitSenzing.Arn
+      Family: !Sub "${AWS::StackName}-task-definition-init-senzing"
+      Memory: "4096"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-ecs-task-definition-init-efs"
+      TaskRoleArn: !GetAtt IamRoleInitSenzing.Arn
+      Volumes:
+        - Name: senzing-etc-dir
+          EFSVolumeConfiguration:
+            AuthorizationConfig: {}
+            FilesystemId:
+              Ref: EfsFileSystem
+            RootDirectory: /etc
     Type: AWS::ECS::TaskDefinition
 
   EcsTaskDefinitionInitSenzing:
