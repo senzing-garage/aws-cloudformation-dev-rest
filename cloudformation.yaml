@@ -1290,6 +1290,8 @@ Resources:
     Condition: IfUsingApiServer
     DependsOn:
       - SecretClientKeystore
+      - SecretClientKeystorePassword
+      - SecretServerKeystorePassword
     Properties:
       ContainerDefinitions:
         - Environment:
