@@ -26,7 +26,6 @@ Using this stack, a developer could interact with Senzing's API Server programma
     1. [Example application prerequisites](#example-application-prerequisites)
     1. [CLI application](#cli-application)
     1. [Web application](#web-application)
-1. [Clean-up](#clean-up)
 1. [References](#references)
 
 ## Pre-requisites
@@ -248,17 +247,6 @@ Two example applications were created to illustrate how an application can authe
 
 1. For more Senzing HTTP REST APIs, please refer to the
    [swagger documentation](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Senzing/senzing-rest-api-specification/main/senzing-rest-api.yaml).
-
-## Clean-up
-
-Once you delete your stack, you'll want to clean-up a left over secret in the secrets manager.
-
-```console
-aws secretsmanager delete-secret \
-    --secret-id ${SECRET_CLIENT_KEYSTORE_BASE64} \
-    --force-delete-without-recovery \
-    --region ${AWS_REGION}
-```
 
 ## References
 
