@@ -96,7 +96,7 @@ can help evaluate costs.
    Example:
 
     ```console
-    export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-client-keystore-base64
+    export SECRET_CLIENT_KEYSTORE_BASE64=xxxxxxxx-client-keystore
     ```
 
 1. :pencil2: From the Cloudformation Stack details "Outputs" tab,

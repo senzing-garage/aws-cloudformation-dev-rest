@@ -305,7 +305,6 @@ Resources:
         - !Ref IamRoleApiServer
         - !Ref IamRoleInitPostgres
         - !Ref IamRoleLambda
-        - !Ref IamRoleG2ConfigTool
     Type: AWS::IAM::Policy
 
   IamPolicyPassRole:
@@ -319,12 +318,10 @@ Resources:
             Resource:
               - !GetAtt IamRoleLambda.Arn
               - !GetAtt IamRoleInitPostgres.Arn
-              - !GetAtt IamRoleG2ConfigTool.Arn
         Version: "2012-10-17"
       Roles:
         - !Ref IamRoleLambda
         - !Ref IamRoleInitPostgres
-        - !Ref IamRoleG2ConfigTool
     Type: AWS::IAM::Policy
 
   IamPolicySecretManager:
@@ -373,7 +370,6 @@ Resources:
       Roles:
         - !Ref IamRoleApiServer
         - !Ref IamRoleLambda
-        - !Ref IamRoleG2ConfigTool
     Type: AWS::IAM::Policy
 
   # -- Logging ------------------------------------------------------------------
