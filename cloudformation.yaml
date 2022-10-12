@@ -7,7 +7,7 @@ AWSTemplateFormatVersion: 2010-09-09
 #     aws cloudformation validate-template: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cloudformation/validate-template.html
 
 Description: >-
-  Senzing aws-cloudformation-dev-rest: 0.0.4
+  Senzing aws-cloudformation-dev-rest: 0.0.5
   For more information see
   https://github.com/Senzing/aws-cloudformation-dev-rest
 
@@ -105,7 +105,8 @@ Parameters:
   SenzingVersion:
     AllowedValues:
       - "3.2.0"
-    Default: "3.2.0"
+      - "3.3.1"
+    Default: "3.3.1"
     Description: "Help: https://hub.senzing.com/aws-cloudformation-ecs-senzing-stack-basic/#senzingversion"
     Type: String
 
@@ -159,6 +160,9 @@ Mappings:
   SenzingVersionMap:
     "3.2.0":
       ApiServer: public.ecr.aws/senzing/senzing-poc-server:3.2.2
+      KeystoreGenerator: senzing/keystore-generator:latest
+    "3.3.1":
+      ApiServer: public.ecr.aws/senzing/senzing-poc-server:3.3.2
       KeystoreGenerator: senzing/keystore-generator:latest
   Constants:
     Run:
@@ -1173,7 +1177,7 @@ Resources:
       VpcId:
         Fn::ImportValue: !Sub "${DatabaseStack}-ec2-VpcId"
     Type: Custom::LambdaRunnerSubnets
-  
+
   # -- Secrets Manager ----------------------------------------------------------
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-secretsmanager-secret.html
@@ -1202,7 +1206,7 @@ Resources:
         - Key: Name
           Value: !Sub "${AWS::StackName}-client-keystore-password"
     Type: "AWS::SecretsManager::Secret"
-  
+
   SecretClientKeystore:
     Properties:
       Description: Senzing API Client Keystore
@@ -1325,8 +1329,8 @@ Resources:
               Value: !Sub "{{resolve:secretsmanager:${AWS::StackName}-client-keystore-password}}"
           Essential: true
           DependsOn:
-          - Condition: COMPLETE
-            ContainerName: generate-keystore
+            - Condition: COMPLETE
+              ContainerName: generate-keystore
           Image: !FindInMap [SenzingVersionMap, !Ref SenzingVersion, ApiServer]
           LogConfiguration:
             LogDriver: awslogs
@@ -1358,7 +1362,12 @@ Resources:
             - Name: AWS_REGION
               Value: !Ref AWS::Region
           Essential: false
-          Image: !FindInMap [SenzingVersionMap, !Ref SenzingVersion, KeystoreGenerator]
+          Image:
+            !FindInMap [
+              SenzingVersionMap,
+              !Ref SenzingVersion,
+              KeystoreGenerator,
+            ]
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -1489,7 +1498,7 @@ Outputs:
         - !FindInMap [SenzingVersionMap, !Ref SenzingVersion, ApiServer]
         - "KeystoreGenerator:"
         - !FindInMap [SenzingVersionMap, !Ref SenzingVersion, KeystoreGenerator]
-        
+
   QueueOutput:
     Description: "URL of the queue with info records. Help: https://hub.senzing.com/aws-cloudformation-dev-rest/details#queueoutput"
     Export:
