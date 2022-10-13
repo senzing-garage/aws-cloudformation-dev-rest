@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+-
+
+## [0.0.5] - 2022-10-12
+
+### Changed in 0.0.5
+
 - updated readme to point to SwaggerUI
+- update to Senzing 3.3.1
 
 ## [0.0.4] - 2022-07-29
 
