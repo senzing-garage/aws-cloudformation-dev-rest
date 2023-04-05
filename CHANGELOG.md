@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## [0.0.8] - 2023-04-05
+
+### Changed in 0.0.8
+
+- update to Senzing 3.5.0
+- remove CFT for Senzing 2.x
+
 ## [0.0.7] - 2023-01-17
 
 ### Changed in 0.0.7
