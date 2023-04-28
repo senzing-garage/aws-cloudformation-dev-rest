@@ -31,8 +31,8 @@ Using this stack, a developer could interact with Senzing's API Server programma
 ## Pre-requisites
 
 1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. Install [git](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-git.md)
-1. Install [aws](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-aws-cli.md)
+1. Install [git](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/git.md)
+1. Install [aws](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/aws-cli.md)
 
 ## Deploy
 
@@ -41,11 +41,13 @@ With appropriate permissions, the
 [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
 can help evaluate costs.
 1. Download the appropriate [AWS Cloudformation template example](https://raw.githubusercontent.com/Senzing/aws-cloudformation-dev-rest/main/cloudformation.yaml) from this repository to your local device.  Example:
-    ```
+
+    ```console
     curl -X GET \
         --output ~/dev-rest-cloudformation.yaml \
         https://raw.githubusercontent.com/Senzing/aws-cloudformation-dev-rest/main/cloudformation.yaml
     ```
+
 1. It is highly suggested to take a look at the AWS Cloudformation Template that has been downloaded.  This template is an example that deploys and configures a number of services and facilities.  While it is a working example, each business may have different requirements and their account may not have all the privleges required to deploy it.  Furthermore, the examples change over time and these files are meant to be treated as code files so they should be put under source control.
 1. In [AWS Cloudformation with dev-rest template](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sz-dev&templateURL=https://s3.amazonaws.com/public-read-access/aws-cloudformation-dev-rest/cloudformation.yaml)
     1. At lower-right, click on "Next" button.
