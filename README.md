@@ -1,5 +1,17 @@
 # aws-cloudformation-dev-rest
 
+If you are beginning your journey with
+[Senzing](https://senzing.com/),
+please start with
+[Senzing Quick Start guides](https://docs.senzing.com/quickstart/).
+
+You are in the
+[Senzing Garage](https://github.com/senzing-garage)
+where projects are "tinkered" on.
+Although this GitHub repository may help you understand an approach to using Senzing,
+it's not considered to be "production ready" and is not considered to be part of the Senzing product.
+Heck, it may not even be appropriate for your application of Senzing!
+
 ## Synopsis
 
 Using the AWS Cloudformation template in this repository,
@@ -30,9 +42,9 @@ Using this stack, a developer could interact with Senzing's API Server programma
 
 ## Pre-requisites
 
-1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/Senzing/aws-cloudformation-database-cluster)
-1. Install [git](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/git.md)
-1. Install [aws](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/aws-cli.md)
+1. Deploy [aws-cloudformation-database-cluster cloudformation stack](https://github.com/senzing-garage/aws-cloudformation-database-cluster)
+1. Install [git](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md)
+1. Install [aws](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/aws-cli.md)
 
 ## Deploy
 
@@ -59,7 +71,7 @@ can help evaluate costs.
                 1. If using more than 100k records, input base64 encoded license string
             1. In **Identify existing database stack**
                 1. Enter the stack name of the previously deployed
-                   [aws-cloudformation-database-cluster](https://github.com/Senzing/aws-cloudformation-database-cluster)
+                   [aws-cloudformation-database-cluster](https://github.com/senzing-garage/aws-cloudformation-database-cluster)
                    Cloudformation stack
                    Example:  `senzing-db`
             1. In **Security**
@@ -194,7 +206,7 @@ Two example applications were created to illustrate how an application can authe
     ```
 
    then using the environment variables values just set,
-   follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md)
+   follow steps in [clone-repository](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md)
    to install the Git repository.
 
 1. Set the following environment variable as seen above:
