@@ -1,5 +1,10 @@
 # aws-cloudformation-dev-rest
 
+## :no_entry: Deprecated
+
+Replaced by
+[aws-marketplace-evaluation](https://github.com/senzing-garage/aws-marketplace-evaluation).
+
 If you are beginning your journey with
 [Senzing](https://senzing.com/),
 please start with
@@ -11,6 +16,8 @@ where projects are "tinkered" on.
 Although this GitHub repository may help you understand an approach to using Senzing,
 it's not considered to be "production ready" and is not considered to be part of the Senzing product.
 Heck, it may not even be appropriate for your application of Senzing!
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 ## Synopsis
 
